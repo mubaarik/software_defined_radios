@@ -107,9 +107,9 @@ def main(top_block_cls=top_block, options=None):
     #     Qt.QApplication.setGraphicsSystem(style)
     # qapp = Qt.QApplication(sys.argv)
 
-    # tb = top_block_cls()
-    # tb.start()
-    # tb.show()
+    tb = top_block_cls()
+    tb.start()
+    tb.show()
 
     # def quitting():
     tb.stop()
