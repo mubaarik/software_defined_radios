@@ -57,6 +57,7 @@ def dewhitening(data, channel):
 
 # 24-bit CRC function
 def crc(data, length, init=0x555555):
+  ##Initialing the CRC
   ret = [(init >> 16) & 0xff, (init >> 8) & 0xff, init & 0xff]
 
   for d in data[:length]:
