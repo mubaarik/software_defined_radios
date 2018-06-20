@@ -9,5 +9,6 @@
 - [ ] Find Write the data from the FIR filter to a file 
 - [ ] Demodulate the FIR 
 - [ ] Search for packets
+- [ ] Create Fake BLE packets and decode them. IF that works, this should also work.
 
 
