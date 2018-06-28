@@ -275,7 +275,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>1e6</value>
+      <value>0</value>
     </param>
   </block>
   <block>
@@ -522,10 +522,10 @@
     </param>
   </block>
   <block>
-    <key>analog_simple_squelch_cc</key>
+    <key>analog_pwr_squelch_xx</key>
     <param>
       <key>alpha</key>
-      <value>0.1</value>
+      <value>.1</value>
     </param>
     <param>
       <key>alias</key>
@@ -545,15 +545,19 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(256, 293)</value>
+      <value>(280, 280)</value>
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
     <param>
+      <key>gate</key>
+      <value>True</value>
+    </param>
+    <param>
       <key>id</key>
-      <value>analog_simple_squelch</value>
+      <value>analog_pwr_squelch_xx_0</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -564,12 +568,71 @@
       <value>0</value>
     </param>
     <param>
+      <key>ramp</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>threshold</key>
-      <value>squelch_threshold</value>
+      <value>-200</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
     </param>
   </block>
   <block>
-    <key>digital_gmsk_demod</key>
+    <key>blocks_file_sink</key>
+    <param>
+      <key>append</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>/Users/mmohamoud/software_defined_radios/ble_collect/demodulated_signal</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(968, 308)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_file_sink_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
+    </param>
+    <param>
+      <key>unbuffered</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>digital_gfsk_demod</key>
     <param>
       <key>alias</key>
       <value></value>
@@ -592,7 +655,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(704, 288)</value>
+      <value>(696, 284)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -600,11 +663,11 @@
     </param>
     <param>
       <key>gain_mu</key>
-      <value>gmsk_gain_mu</value>
+      <value>0.175</value>
     </param>
     <param>
       <key>id</key>
-      <value>digital_gmsk_demod_0</value>
+      <value>digital_gfsk_demod_0</value>
     </param>
     <param>
       <key>log</key>
@@ -620,15 +683,19 @@
     </param>
     <param>
       <key>mu</key>
-      <value>gmsk_mu</value>
+      <value>0.5</value>
     </param>
     <param>
       <key>omega_relative_limit</key>
-      <value>gmsk_omega_limit</value>
+      <value>0.005</value>
     </param>
     <param>
       <key>samples_per_symbol</key>
-      <value>gmsk_sps</value>
+      <value>4</value>
+    </param>
+    <param>
+      <key>sensitivity</key>
+      <value>1.0</value>
     </param>
     <param>
       <key>verbose</key>
@@ -734,11 +801,11 @@
     </param>
     <param>
       <key>maxoutbuf</key>
-      <value>0</value>
+      <value>65999</value>
     </param>
     <param>
       <key>minoutbuf</key>
-      <value>0</value>
+      <value>6583</value>
     </param>
     <param>
       <key>vlen</key>
@@ -761,7 +828,7 @@
     </param>
     <param>
       <key>center_freq0</key>
-      <value>2426e6</value>
+      <value>freq</value>
     </param>
     <param>
       <key>dc_offs_enb0</key>
@@ -2167,20 +2234,26 @@
     </param>
   </block>
   <connection>
-    <source_block_id>analog_simple_squelch</source_block_id>
+    <source_block_id>analog_pwr_squelch_xx_0</source_block_id>
     <sink_block_id>freq_xlating_fir_filter_lp</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>digital_gmsk_demod_0</source_block_id>
+    <source_block_id>digital_gfsk_demod_0</source_block_id>
+    <sink_block_id>blocks_file_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>digital_gfsk_demod_0</source_block_id>
     <sink_block_id>unpacked_to_packed</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>freq_xlating_fir_filter_lp</source_block_id>
-    <sink_block_id>digital_gmsk_demod_0</sink_block_id>
+    <sink_block_id>digital_gfsk_demod_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2192,7 +2265,7 @@
   </connection>
   <connection>
     <source_block_id>uhd_usrp_source_0</source_block_id>
-    <sink_block_id>analog_simple_squelch</sink_block_id>
+    <sink_block_id>analog_pwr_squelch_xx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

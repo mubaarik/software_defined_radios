@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Mon Jun 11 11:07:43 2018
+# Generated: Thu Jun 28 14:26:47 2018
 ##################################################
 
 from gnuradio import analog
@@ -42,7 +42,7 @@ class gr_ble(gr.top_block):
         self.gmsk_omega_limit = gmsk_omega_limit = 0.035
         self.gmsk_mu = gmsk_mu = 0.5
         self.gmsk_gain_mu = gmsk_gain_mu = 0.7
-        self.freq_offset = freq_offset = 1e6
+        self.freq_offset = freq_offset = 0
         self.freq = freq = ble_base_freq+(ble_channel_spacing * ble_channel)
 
         ##################################################
@@ -62,30 +62,36 @@ class gr_ble(gr.top_block):
         	),
         )
         self.uhd_usrp_source_0.set_samp_rate(4e6)
-        self.uhd_usrp_source_0.set_center_freq(2426e6, 0)
+        self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(60, 0)
-        self.message_sink = blocks.message_sink(gr.sizeof_char*1, message_queue, True)
+        self.message_sink = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
+        (self.message_sink).set_min_output_buffer(6583)
+        (self.message_sink).set_max_output_buffer(65999)
         self.freq_xlating_fir_filter_lp = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), -freq_offset, sample_rate)
-        self.digital_gmsk_demod_0 = digital.gmsk_demod(
-        	samples_per_symbol=gmsk_sps,
-        	gain_mu=gmsk_gain_mu,
-        	mu=gmsk_mu,
-        	omega_relative_limit=gmsk_omega_limit,
+        self.digital_gfsk_demod_0 = digital.gfsk_demod(
+        	samples_per_symbol=4,
+        	sensitivity=1.0,
+        	gain_mu=0.175,
+        	mu=0.5,
+        	omega_relative_limit=0.005,
         	freq_error=0.0,
         	verbose=False,
         	log=False,
         )
-        self.analog_simple_squelch = analog.simple_squelch_cc(squelch_threshold, 0.1)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demodulated_signal', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
+        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-200, .1, 0, True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_simple_squelch, 0), (self.freq_xlating_fir_filter_lp, 0))
-        self.connect((self.digital_gmsk_demod_0, 0), (self.unpacked_to_packed, 0))
-        self.connect((self.freq_xlating_fir_filter_lp, 0), (self.digital_gmsk_demod_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.analog_simple_squelch, 0))
+        self.connect((self.analog_pwr_squelch_xx_0, 0), (self.freq_xlating_fir_filter_lp, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.unpacked_to_packed, 0))
+        self.connect((self.freq_xlating_fir_filter_lp, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
         self.connect((self.unpacked_to_packed, 0), (self.message_sink, 0))
 
     def get_transition_width(self):
@@ -143,7 +149,6 @@ class gr_ble(gr.top_block):
 
     def set_squelch_threshold(self, squelch_threshold):
         self.squelch_threshold = squelch_threshold
-        self.analog_simple_squelch.set_threshold(self.squelch_threshold)
 
     def get_rf_gain(self):
         return self.rf_gain
@@ -194,6 +199,7 @@ class gr_ble(gr.top_block):
 
     def set_freq(self, freq):
         self.freq = freq
+        self.uhd_usrp_source_0.set_center_freq(self.freq, 0)
 
 
 def main(top_block_cls=gr_ble, options=None):

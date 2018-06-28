@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Basic Gui Block3
-# Generated: Wed Jun 20 14:08:27 2018
+# Title: Bluetooth LE Receiver
+# Author: Jan Wagner
+# Generated: Wed Jun 27 10:54:44 2018
 ##################################################
 
 if __name__ == '__main__':
@@ -34,12 +35,12 @@ import time
 from gnuradio import qtgui
 
 
-class basic_GUI_block3(gr.top_block, Qt.QWidget):
+class gr_ble2(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Basic Gui Block3")
+        gr.top_block.__init__(self, "Bluetooth LE Receiver")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Basic Gui Block3")
+        self.setWindowTitle("Bluetooth LE Receiver")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -57,7 +58,7 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "basic_GUI_block3")
+        self.settings = Qt.QSettings("GNU Radio", "gr_ble2")
         self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
 
@@ -72,15 +73,19 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
         self.ble_channel = ble_channel = 12
         self.ble_base_freq = ble_base_freq = 2402e6
         self.squelch_threshold = squelch_threshold = -70
-        self.samp_rate = samp_rate = 32000
         self.rf_gain = rf_gain = 10
         self.lowpass_filter = lowpass_filter = firdes.low_pass(1, sample_rate, cutoff_freq, transition_width, firdes.WIN_HAMMING, 6.76)
-        self.gmsk_sps = gmsk_sps = int(sample_rate / data_rate)
+        self.gmsk_sps = gmsk_sps = int(sample_rate / (data_rate))
         self.gmsk_omega_limit = gmsk_omega_limit = 0.035
-        self.gmsk_mu = gmsk_mu = 0.5
+        self.gmsk_mu = gmsk_mu = 0.35
         self.gmsk_gain_mu = gmsk_gain_mu = 0.7
-        self.freq_offset = freq_offset = 1e6
+        self.freq_offset = freq_offset = 1000e3
         self.freq = freq = ble_base_freq+(ble_channel_spacing * ble_channel)
+
+        ##################################################
+        # Message Queues
+        ##################################################
+        message_sink_msgq_out = virtual_sink_msgq_in = gr.msg_queue(2)
 
         ##################################################
         # Blocks
@@ -93,12 +98,12 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
         		channels=range(1),
         	),
         )
-        self.uhd_usrp_source_0.set_samp_rate(4e6)
+        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(2426e6, 0)
         self.uhd_usrp_source_0.set_gain(60, 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	1024, #size
-        	samp_rate, #samp_rate
+        	sample_rate, #samp_rate
         	"", #name
         	1 #number of inputs
         )
@@ -147,33 +152,36 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.freq_xlating_fir_filter_lp = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), -1e6, 4e6)
-        self.digital_gmsk_demod_0 = digital.gmsk_demod(
-        	samples_per_symbol=gmsk_sps,
-        	gain_mu=gmsk_gain_mu,
-        	mu=gmsk_mu,
-        	omega_relative_limit=gmsk_omega_limit,
+        self.message_sink = blocks.message_sink(gr.sizeof_char*1, message_sink_msgq_out, True)
+        self.freq_xlating_fft_filter_ccc_0 = filter.freq_xlating_fft_filter_ccc(1, (lowpass_filter), -freq_offset, sample_rate)
+        self.freq_xlating_fft_filter_ccc_0.set_nthreads(1)
+        self.freq_xlating_fft_filter_ccc_0.declare_sample_delay(0)
+        self.digital_gfsk_demod_0 = digital.gfsk_demod(
+        	samples_per_symbol=4,
+        	sensitivity=1.0,
+        	gain_mu=0.550,
+        	mu=0.5,
+        	omega_relative_limit=0.0025,
         	freq_error=0.0,
         	verbose=False,
         	log=False,
         )
-        self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_char*1, 8)
-        self.analog_simple_squelch = analog.simple_squelch_cc(-70, 0.1)
+        self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(-100, .1)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_simple_squelch, 0), (self.freq_xlating_fir_filter_lp, 0))
-        self.connect((self.blocks_stream_to_vector_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.digital_gmsk_demod_0, 0), (self.unpacked_to_packed, 0))
-        self.connect((self.freq_xlating_fir_filter_lp, 0), (self.digital_gmsk_demod_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.analog_simple_squelch, 0))
-        self.connect((self.unpacked_to_packed, 0), (self.blocks_stream_to_vector_0, 0))
+        self.connect((self.analog_simple_squelch_cc_0, 0), (self.freq_xlating_fft_filter_ccc_0, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.unpacked_to_packed, 0))
+        self.connect((self.freq_xlating_fft_filter_ccc_0, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.freq_xlating_fft_filter_ccc_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
+        self.connect((self.unpacked_to_packed, 0), (self.message_sink, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "basic_GUI_block3")
+        self.settings = Qt.QSettings("GNU Radio", "gr_ble2")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -190,14 +198,16 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.set_lowpass_filter(firdes.low_pass(1, self.sample_rate, self.cutoff_freq, self.transition_width, firdes.WIN_HAMMING, 6.76))
-        self.set_gmsk_sps(int(self.sample_rate / self.data_rate))
+        self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
+        self.qtgui_time_sink_x_0.set_samp_rate(self.sample_rate)
+        self.set_gmsk_sps(int(self.sample_rate / (self.data_rate)))
 
     def get_data_rate(self):
         return self.data_rate
 
     def set_data_rate(self, data_rate):
         self.data_rate = data_rate
-        self.set_gmsk_sps(int(self.sample_rate / self.data_rate))
+        self.set_gmsk_sps(int(self.sample_rate / (self.data_rate)))
 
     def get_cutoff_freq(self):
         return self.cutoff_freq
@@ -233,13 +243,6 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
     def set_squelch_threshold(self, squelch_threshold):
         self.squelch_threshold = squelch_threshold
 
-    def get_samp_rate(self):
-        return self.samp_rate
-
-    def set_samp_rate(self, samp_rate):
-        self.samp_rate = samp_rate
-        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
-
     def get_rf_gain(self):
         return self.rf_gain
 
@@ -251,7 +254,7 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
 
     def set_lowpass_filter(self, lowpass_filter):
         self.lowpass_filter = lowpass_filter
-        self.freq_xlating_fir_filter_lp.set_taps((self.lowpass_filter))
+        self.freq_xlating_fft_filter_ccc_0.set_taps((self.lowpass_filter))
 
     def get_gmsk_sps(self):
         return self.gmsk_sps
@@ -282,6 +285,7 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
 
     def set_freq_offset(self, freq_offset):
         self.freq_offset = freq_offset
+        self.freq_xlating_fft_filter_ccc_0.set_center_freq(-self.freq_offset)
 
     def get_freq(self):
         return self.freq
@@ -290,7 +294,7 @@ class basic_GUI_block3(gr.top_block, Qt.QWidget):
         self.freq = freq
 
 
-def main(top_block_cls=basic_GUI_block3, options=None):
+def main(top_block_cls=gr_ble2, options=None):
 
     from distutils.version import StrictVersion
     if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
