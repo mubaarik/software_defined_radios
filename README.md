@@ -16,7 +16,7 @@
 ## Todo 3 
 - [ ] Compute pre-demodulation QI signal for the packet.
 - [ ] Do the convolution with the QI data, streaming out the dot product.
-- [ ] 
+- [ ] ....
 
 
 
