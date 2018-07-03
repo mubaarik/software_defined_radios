@@ -18,6 +18,9 @@ def test_convolve():
 	assert all([ind in expected_map for ind in conv_map]), "The generated map doesn't contain the same elements as the expected map";
 	assert all([len(expected_map[ind])==len(conv_map[ind]) for ind in conv_map]), "The generated map doesn't seem to contain the same data as the expect map";
 
+
+	
+
 ##testing compute hamming distance 
 
 def test_compute_hammming_distance(index, expected_dist):
@@ -29,6 +32,11 @@ def test_compute_hammming_distance(index, expected_dist):
 dist_map = {}
 for ind in dist_map:
 	test_compute_hammming_distance(ind, dist_map[ind])
+
+
+
+
+
 ## test hex_to_binary
 def test_hex_to_binary(in_hex, expected_bin):
 	out_bin = conv.hex_to_binary(in_hex);
@@ -38,9 +46,30 @@ hex_binary_map = []
 for h,b in hex_binary_map:
 	test_hex_to_binary(h,b)
 
+
+
+
 ## test buffer to binary array
 
 def test_gr_buffer_to_binary_array(buff, binary_arr):
-	out_binary = 
-	assert (buff==binary_arr), 'found the binary string', 
+	out_binary = conv.gr_buufer_to_binary_array(buff)
+	assert (buff==binary_arr), 'found the binary string', out_binary, "for buffer", buff,"expected", binary_arr
 
+buffer_binary_map = []
+
+for buff,binary in buffer_binary_map:
+	test_gr_buffer_to_binary_array(buff,binary)
+
+
+
+
+
+## test get binary
+
+def test_get_binary(byte_str,expected_bin):
+	out_binary = conv.get_binary(byte_str);
+	assert(out_binary==expected_bin),"Found the binary string",out_binary, "for byte string",byte_str,"expected binary string", expected_bin
+
+byte_str_to_binary_str_map = []
+for byte,binary in byte_str_to_binary_str_map:
+	test_get_binary(byte,binary)
