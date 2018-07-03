@@ -36,6 +36,8 @@ BLE_CHANS = { 37:0, 0:1, 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8, 8:9, 9:10, 10:11, 38
 # Swap bits of a 8-bit value
 def swap_bits(value):
     return (value * 0x0202020202  & 0x010884422010) % 1023
+def bit_reverse(value):
+  return int('{:0{width}b}'.format(value, width=8)[::-1])
 
 # (De)Whiten data based on BLE channel
 def dewhitening(data, channel):
@@ -45,8 +47,11 @@ def dewhitening(data, channel):
   for d in data:
     d = swap_bits(ord(d[:1]))
     for i in 128, 64, 32, 16, 8, 4, 2, 1:
+
       if lfsr & 0x80:
+        
         lfsr ^= 0x11
+        
         d ^= i
 
       lfsr <<= 1

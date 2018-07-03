@@ -2,6 +2,9 @@
 from  bitstring import BitArray
 import binascii
 
+##
+BIT_ERROR_THRESHOLD = 20;
+
 def is_cmt_tag(data, target="b84c020"):
   return target in data
 class DataMap:
@@ -57,7 +60,7 @@ class Convolution:
         xor_result = self.compute_hamming_distance()
         if xor_result==None:
           return self.conv_map
-        if xor_result>self.n/2:
+        if xor_result>self.n-self.n/4.0:
           if xor_result in self.conv_map:
             self.conv_map[xor_result].append(self.index);
           else:
@@ -67,6 +70,7 @@ class Convolution:
       except IndexError:
         return self.conv_map
   def compute_hamming_distance(self):
+    ##segment of the buffer data to be XORed with the target vector 
     xor_segment = self.search_vect[self.index:self.index+self.n];
     ###########
     if len(xor_segment)!=len(self.target_vect):
@@ -102,7 +106,7 @@ class Convolution:
     '''
     digits = binascii.hexlify(byte_hex);
     byte_arr =BitArray(hex=prefix+digits);
-    return  byte_arr.bin[2:]
+    return  byte_arr.bin
   def attach_prefix(self, arr,prefix = '0b'):
     '''
     examples
@@ -130,15 +134,21 @@ class Convolution:
     
     search_len = len(self.target_vect)
     max_match = 0
-    if conv.conv_map:
-      max_match = max(conv.conv_map.keys())
-    if max_match>search_len-3:
+    if self.conv_map:
+      max_match = max(self.conv_map.keys())
+    if max_match>search_len-BIT_ERROR_THRESHOLD:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
-      print "target vector: ", self.target_vect
-      print "search space:",self.search_vect[max(matching_index-8,0):]
-      print "matching part:",self.search_vect[matching_index:matching_index+search_len]
-      print "map:", self.conv_map[max_match], len(self.search_vect)
+      print "found advertisement packet length:",max_match," max packet length:",search_len, " bit errors: ", search_len - max_match 
+      # print "max_match:",max_match
+      # print "target vector: ", self.target_vect
+      # print "search space:",self.search_vect[max(matching_index-8,0):]
+      # print "matching part:",self.search_vect[matching_index:matching_index+search_len]
+      # print "map:", self.conv_map[max_match], len(self.search_vect)
+def hex_arr_to_hex(hex_arr):
+    return binascii.hexlify(bytearray(hex_arr))
+def hex_to_byte_arr(hex_str):
+  return hex_str.decode('hex');
 
 def hamming2(s1, s2):
   """Calculate the Hamming distance between two bit strings"""

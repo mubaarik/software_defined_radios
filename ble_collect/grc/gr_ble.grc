@@ -298,11 +298,11 @@
     </param>
     <param>
       <key>id</key>
-      <value>gmsk_gain_mu</value>
+      <value>gfsk_gain_mu</value>
     </param>
     <param>
       <key>value</key>
-      <value>0.7</value>
+      <value>0.3</value>
     </param>
   </block>
   <block>
@@ -325,7 +325,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>gmsk_mu</value>
+      <value>gfsk_mu</value>
     </param>
     <param>
       <key>value</key>
@@ -352,7 +352,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>gmsk_omega_limit</value>
+      <value>gfsk_omega_limit</value>
     </param>
     <param>
       <key>value</key>
@@ -379,7 +379,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>gmsk_sps</value>
+      <value>gfsk_sps</value>
     </param>
     <param>
       <key>value</key>
@@ -437,7 +437,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>10</value>
+      <value>70</value>
     </param>
   </block>
   <block>
@@ -479,6 +479,33 @@
     </param>
     <param>
       <key>_coordinate</key>
+      <value>(904, 156)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>sensivity</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>1.0</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
       <value>(256, 221)</value>
     </param>
     <param>
@@ -491,7 +518,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>-70</value>
+      <value>-120</value>
     </param>
   </block>
   <block>
@@ -573,7 +600,7 @@
     </param>
     <param>
       <key>threshold</key>
-      <value>-200</value>
+      <value>squelch_threshold</value>
     </param>
     <param>
       <key>type</key>
@@ -581,10 +608,61 @@
     </param>
   </block>
   <block>
-    <key>blocks_file_sink</key>
+    <key>blocks_message_sink</key>
     <param>
-      <key>append</key>
-      <value>False</value>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>dont_block</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(360, 428)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>180</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_message_sink_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_unpacked_to_packed_xx</key>
+    <param>
+      <key>bits_per_chunk</key>
+      <value>1</value>
     </param>
     <param>
       <key>alias</key>
@@ -603,32 +681,36 @@
       <value>True</value>
     </param>
     <param>
-      <key>file</key>
-      <value>/Users/mmohamoud/software_defined_radios/ble_collect/demodulated_signal</value>
+      <key>endianness</key>
+      <value>gr.GR_LSB_FIRST</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(968, 308)</value>
+      <value>(720, 428)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>180</value>
     </param>
     <param>
       <key>id</key>
-      <value>blocks_file_sink_0</value>
+      <value>blocks_unpacked_to_packed_xx_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>num_ports</key>
+      <value>1</value>
     </param>
     <param>
       <key>type</key>
       <value>byte</value>
-    </param>
-    <param>
-      <key>unbuffered</key>
-      <value>False</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
     </param>
   </block>
   <block>
@@ -663,7 +745,7 @@
     </param>
     <param>
       <key>gain_mu</key>
-      <value>0.175</value>
+      <value>gfsk_gain_mu</value>
     </param>
     <param>
       <key>id</key>
@@ -683,133 +765,23 @@
     </param>
     <param>
       <key>mu</key>
-      <value>0.5</value>
+      <value>gfsk_mu</value>
     </param>
     <param>
       <key>omega_relative_limit</key>
-      <value>0.005</value>
+      <value>gfsk_omega_limit</value>
     </param>
     <param>
       <key>samples_per_symbol</key>
-      <value>4</value>
+      <value>gfsk_sps</value>
     </param>
     <param>
       <key>sensitivity</key>
-      <value>1.0</value>
+      <value>sensivity</value>
     </param>
     <param>
       <key>verbose</key>
       <value>False</value>
-    </param>
-  </block>
-  <block>
-    <key>freq_xlating_fir_filter_xxx</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>center_freq</key>
-      <value>-freq_offset</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>decim</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(440, 295)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>freq_xlating_fir_filter_lp</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>samp_rate</key>
-      <value>sample_rate</value>
-    </param>
-    <param>
-      <key>taps</key>
-      <value>lowpass_filter</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>ccc</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_message_sink</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>dont_block</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(528, 436)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>180</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>message_sink</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>65999</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>6583</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
     </param>
   </block>
   <block>
@@ -844,7 +816,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>60</value>
+      <value>rf_gain</value>
     </param>
     <param>
       <key>lo_export0</key>
@@ -2124,7 +2096,7 @@
     </param>
     <param>
       <key>samp_rate</key>
-      <value>4e6</value>
+      <value>sample_rate</value>
     </param>
     <param>
       <key>hide_cmd_port</key>
@@ -2152,61 +2124,6 @@
     </param>
   </block>
   <block>
-    <key>blocks_unpacked_to_packed_xx</key>
-    <param>
-      <key>bits_per_chunk</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>endianness</key>
-      <value>gr.GR_LSB_FIRST</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(728, 429)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>180</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>unpacked_to_packed</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>num_ports</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-  </block>
-  <block>
     <key>virtual_sink</key>
     <param>
       <key>comment</key>
@@ -2218,7 +2135,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(384, 436)</value>
+      <value>(216, 428)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2226,7 +2143,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>virtual_sink</value>
+      <value>virtual_sink_0</value>
     </param>
     <param>
       <key>stream_id</key>
@@ -2235,43 +2152,31 @@
   </block>
   <connection>
     <source_block_id>analog_pwr_squelch_xx_0</source_block_id>
-    <sink_block_id>freq_xlating_fir_filter_lp</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>digital_gfsk_demod_0</source_block_id>
-    <sink_block_id>blocks_file_sink_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>digital_gfsk_demod_0</source_block_id>
-    <sink_block_id>unpacked_to_packed</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>freq_xlating_fir_filter_lp</source_block_id>
     <sink_block_id>digital_gfsk_demod_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>message_sink</source_block_id>
-    <sink_block_id>virtual_sink</sink_block_id>
+    <source_block_id>blocks_message_sink_0</source_block_id>
+    <sink_block_id>virtual_sink_0</sink_block_id>
     <source_key>msg</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_unpacked_to_packed_xx_0</source_block_id>
+    <sink_block_id>blocks_message_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>digital_gfsk_demod_0</source_block_id>
+    <sink_block_id>blocks_unpacked_to_packed_xx_0</sink_block_id>
+    <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>uhd_usrp_source_0</source_block_id>
     <sink_block_id>analog_pwr_squelch_xx_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>unpacked_to_packed</source_block_id>
-    <sink_block_id>message_sink</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

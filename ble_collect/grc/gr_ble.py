@@ -4,14 +4,13 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Thu Jun 28 14:26:47 2018
+# Generated: Tue Jul  3 11:11:48 2018
 ##################################################
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import eng_notation
-from gnuradio import filter
 from gnuradio import gr
 from gnuradio import uhd
 from gnuradio.eng_option import eng_option
@@ -35,13 +34,14 @@ class gr_ble(gr.top_block):
         self.ble_channel_spacing = ble_channel_spacing = 2e6
         self.ble_channel = ble_channel = 12
         self.ble_base_freq = ble_base_freq = 2402e6
-        self.squelch_threshold = squelch_threshold = -70
-        self.rf_gain = rf_gain = 10
+        self.squelch_threshold = squelch_threshold = -120
+        self.sensivity = sensivity = 1.0
+        self.rf_gain = rf_gain = 70
         self.lowpass_filter = lowpass_filter = firdes.low_pass(1, sample_rate, cutoff_freq, transition_width, firdes.WIN_HAMMING, 6.76)
-        self.gmsk_sps = gmsk_sps = int(sample_rate / data_rate)
-        self.gmsk_omega_limit = gmsk_omega_limit = 0.035
-        self.gmsk_mu = gmsk_mu = 0.5
-        self.gmsk_gain_mu = gmsk_gain_mu = 0.7
+        self.gfsk_sps = gfsk_sps = int(sample_rate / data_rate)
+        self.gfsk_omega_limit = gfsk_omega_limit = 0.035
+        self.gfsk_mu = gfsk_mu = 0.5
+        self.gfsk_gain_mu = gfsk_gain_mu = 0.3
         self.freq_offset = freq_offset = 0
         self.freq = freq = ble_base_freq+(ble_channel_spacing * ble_channel)
 
@@ -53,7 +53,6 @@ class gr_ble(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.unpacked_to_packed = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -61,38 +60,32 @@ class gr_ble(gr.top_block):
         		channels=range(1),
         	),
         )
-        self.uhd_usrp_source_0.set_samp_rate(4e6)
+        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
-        self.uhd_usrp_source_0.set_gain(60, 0)
-        self.message_sink = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
-        (self.message_sink).set_min_output_buffer(6583)
-        (self.message_sink).set_max_output_buffer(65999)
-        self.freq_xlating_fir_filter_lp = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), -freq_offset, sample_rate)
+        self.uhd_usrp_source_0.set_gain(rf_gain, 0)
         self.digital_gfsk_demod_0 = digital.gfsk_demod(
-        	samples_per_symbol=4,
-        	sensitivity=1.0,
-        	gain_mu=0.175,
-        	mu=0.5,
-        	omega_relative_limit=0.005,
+        	samples_per_symbol=gfsk_sps,
+        	sensitivity=sensivity,
+        	gain_mu=gfsk_gain_mu,
+        	mu=gfsk_mu,
+        	omega_relative_limit=gfsk_omega_limit,
         	freq_error=0.0,
         	verbose=False,
         	log=False,
         )
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demodulated_signal', False)
-        self.blocks_file_sink_0.set_unbuffered(False)
-        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-200, .1, 0, True)
+        self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
+        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
+        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_threshold, .1, 0, True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_pwr_squelch_xx_0, 0), (self.freq_xlating_fir_filter_lp, 0))
-        self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_file_sink_0, 0))
-        self.connect((self.digital_gfsk_demod_0, 0), (self.unpacked_to_packed, 0))
-        self.connect((self.freq_xlating_fir_filter_lp, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.analog_pwr_squelch_xx_0, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_message_sink_0, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
-        self.connect((self.unpacked_to_packed, 0), (self.message_sink, 0))
 
     def get_transition_width(self):
         return self.transition_width
@@ -106,15 +99,16 @@ class gr_ble(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.set_gfsk_sps(int(self.sample_rate / self.data_rate))
+        self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
         self.set_lowpass_filter(firdes.low_pass(1, self.sample_rate, self.cutoff_freq, self.transition_width, firdes.WIN_HAMMING, 6.76))
-        self.set_gmsk_sps(int(self.sample_rate / self.data_rate))
 
     def get_data_rate(self):
         return self.data_rate
 
     def set_data_rate(self, data_rate):
         self.data_rate = data_rate
-        self.set_gmsk_sps(int(self.sample_rate / self.data_rate))
+        self.set_gfsk_sps(int(self.sample_rate / self.data_rate))
 
     def get_cutoff_freq(self):
         return self.cutoff_freq
@@ -149,50 +143,57 @@ class gr_ble(gr.top_block):
 
     def set_squelch_threshold(self, squelch_threshold):
         self.squelch_threshold = squelch_threshold
+        self.analog_pwr_squelch_xx_0.set_threshold(self.squelch_threshold)
+
+    def get_sensivity(self):
+        return self.sensivity
+
+    def set_sensivity(self, sensivity):
+        self.sensivity = sensivity
 
     def get_rf_gain(self):
         return self.rf_gain
 
     def set_rf_gain(self, rf_gain):
         self.rf_gain = rf_gain
+        self.uhd_usrp_source_0.set_gain(self.rf_gain, 0)
+
 
     def get_lowpass_filter(self):
         return self.lowpass_filter
 
     def set_lowpass_filter(self, lowpass_filter):
         self.lowpass_filter = lowpass_filter
-        self.freq_xlating_fir_filter_lp.set_taps((self.lowpass_filter))
 
-    def get_gmsk_sps(self):
-        return self.gmsk_sps
+    def get_gfsk_sps(self):
+        return self.gfsk_sps
 
-    def set_gmsk_sps(self, gmsk_sps):
-        self.gmsk_sps = gmsk_sps
+    def set_gfsk_sps(self, gfsk_sps):
+        self.gfsk_sps = gfsk_sps
 
-    def get_gmsk_omega_limit(self):
-        return self.gmsk_omega_limit
+    def get_gfsk_omega_limit(self):
+        return self.gfsk_omega_limit
 
-    def set_gmsk_omega_limit(self, gmsk_omega_limit):
-        self.gmsk_omega_limit = gmsk_omega_limit
+    def set_gfsk_omega_limit(self, gfsk_omega_limit):
+        self.gfsk_omega_limit = gfsk_omega_limit
 
-    def get_gmsk_mu(self):
-        return self.gmsk_mu
+    def get_gfsk_mu(self):
+        return self.gfsk_mu
 
-    def set_gmsk_mu(self, gmsk_mu):
-        self.gmsk_mu = gmsk_mu
+    def set_gfsk_mu(self, gfsk_mu):
+        self.gfsk_mu = gfsk_mu
 
-    def get_gmsk_gain_mu(self):
-        return self.gmsk_gain_mu
+    def get_gfsk_gain_mu(self):
+        return self.gfsk_gain_mu
 
-    def set_gmsk_gain_mu(self, gmsk_gain_mu):
-        self.gmsk_gain_mu = gmsk_gain_mu
+    def set_gfsk_gain_mu(self, gfsk_gain_mu):
+        self.gfsk_gain_mu = gfsk_gain_mu
 
     def get_freq_offset(self):
         return self.freq_offset
 
     def set_freq_offset(self, freq_offset):
         self.freq_offset = freq_offset
-        self.freq_xlating_fir_filter_lp.set_center_freq(-self.freq_offset)
 
     def get_freq(self):
         return self.freq
