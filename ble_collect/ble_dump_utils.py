@@ -3,7 +3,8 @@ from  bitstring import BitArray
 import binascii
 
 ##
-BIT_ERROR_THRESHOLD = 20;
+BIT_ERROR_THRESHOLD = 3;
+COVL_RECORDING_THRESHOLD = 6
 
 def is_cmt_tag(data, target="b84c020"):
   return target in data
@@ -50,7 +51,7 @@ class Convolution:
     #print "target vector:",self.target_vect
     #print "search vector:", self.search_vect
 
-    self.index = len(self.target_vect)
+    self.index = 0#len(self.target_vect)
     self.n = len(self.target_vect)
     self.conv_map = {};
   def convolve(self):
@@ -60,7 +61,7 @@ class Convolution:
         xor_result = self.compute_hamming_distance()
         if xor_result==None:
           return self.conv_map
-        if xor_result>self.n-self.n/4.0:
+        if xor_result>self.n-COVL_RECORDING_THRESHOLD:
           if xor_result in self.conv_map:
             self.conv_map[xor_result].append(self.index);
           else:
@@ -69,9 +70,12 @@ class Convolution:
         self.index+=1;
       except IndexError:
         return self.conv_map
+
+
   def compute_hamming_distance(self):
     ##segment of the buffer data to be XORed with the target vector 
     xor_segment = self.search_vect[self.index:self.index+self.n];
+    #Sprint "sengment:",xor_segment,"target:", self.target_vect
     ###########
     if len(xor_segment)!=len(self.target_vect):
       #print "segment length: ", len(xor_segment), "binary_array len:", len(self.target_vect)
@@ -81,6 +85,9 @@ class Convolution:
     new_segment  = self.binary_to_integer(xor_segment)
     ########
     return self.n-"{0:b}".format(target^new_segment).count('1');
+
+
+
   def hex_to_binary(self,_hex):
     '''
     Examples 
@@ -89,6 +96,8 @@ class Convolution:
     '''
     bin_obj = BitArray(hex = _hex);
     return bin_obj.bin;
+
+
   def gr_buffer_to_binary_array(self, gr_buff):
     '''
     Examples
@@ -98,6 +107,8 @@ class Convolution:
     for position, byte, in enumerate(gr_buff):
       binary_array+=self.get_binary(byte)
     return binary_array
+
+
   def get_binary(self,byte_hex, prefix = '0x'):
     '''
     examples 
@@ -106,7 +117,9 @@ class Convolution:
     '''
     digits = binascii.hexlify(byte_hex);
     byte_arr =BitArray(hex=prefix+digits);
-    return  byte_arr.bin
+    return  byte_arr.bin;
+
+
   def attach_prefix(self, arr,prefix = '0b'):
     '''
     examples
@@ -116,6 +129,8 @@ class Convolution:
     '0x01010101'
     '''
     return prefix+arr;
+
+
   def binary_to_integer(self,binary_string):
     '''
     examples
@@ -130,23 +145,41 @@ class Convolution:
       return int(binary_string,2)
     except:
       print "binary_string xun: ", binary_string
+  def binary_to_hex(self,binary_arr):
+    '''
+    examples
+    >>> binary_to_hex('1110010010111110111001000010100110011110')
+    'e4bee4299e'
+    '''
+    resulting_hex = hex(int(binary_arr,2))[2:]
+    if binary_arr[0:4]=='0000':
+      resulting_hex='0'+resulting_hex
+    return resulting_hex
+
+
   def info(self):
     
     search_len = len(self.target_vect)
     max_match = 0
     if self.conv_map:
       max_match = max(self.conv_map.keys())
-    if max_match>search_len-BIT_ERROR_THRESHOLD:
+    if max_match>(search_len-1)-BIT_ERROR_THRESHOLD:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
       print "found advertisement packet length:",max_match," max packet length:",search_len, " bit errors: ", search_len - max_match 
       # print "max_match:",max_match
       # print "target vector: ", self.target_vect
       # print "search space:",self.search_vect[max(matching_index-8,0):]
-      # print "matching part:",self.search_vect[matching_index:matching_index+search_len]
+      data = self.binary_to_hex(self.search_vect[matching_index:matching_index+search_len])
+      print "found matching:",data,'search vector:',self.binary_to_hex(self.target_vect);
       # print "map:", self.conv_map[max_match], len(self.search_vect)
+
+
+
 def hex_arr_to_hex(hex_arr):
     return binascii.hexlify(bytearray(hex_arr))
+
+
 def hex_to_byte_arr(hex_str):
   return hex_str.decode('hex');
 

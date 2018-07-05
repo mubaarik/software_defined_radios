@@ -197,7 +197,7 @@ if __name__ == '__main__':
 
         # Search for BLE_PREAMBLE in received data
         
-        search_term = TARGET_ONE#'0xaad6be898e'#'0xaa8E89BED6'#'0xaa'#'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
+        search_term = '0xaad6be898e'#TARGET_ONE##'0xaa8E89BED6'#'0xaa'#'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
         #conv = Convolution(search_term,lst_buffer);
         #conv1 = Convolution(search_term,_buffer);
         
@@ -279,7 +279,9 @@ if __name__ == '__main__':
           if ble_access_address == BLE_ACCESS_ADDR:
             #print "Me too!"#, [ord(d) for d in _buffer]
             # Extract BLE Length
-            #print "access address:",str([i for i in _buffer])
+            print ""
+            print "access address"
+            print ""
             ble_len = ble_header[1] & 0x3f
           else:
             ##skip non-advertiment packets
