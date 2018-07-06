@@ -173,6 +173,8 @@ class Convolution:
       data = self.binary_to_hex(self.search_vect[matching_index:matching_index+search_len])
       print "found matching:",data,'search vector:',self.binary_to_hex(self.target_vect);
       # print "map:", self.conv_map[max_match], len(self.search_vect)
+      return True
+    return False
 
 
 

@@ -56,6 +56,16 @@ class ComparisonData:
     gr.set_gfsk_omega_limit(self.gfsk_gain_mu)
     gr.set_rf_gain(self.rf_gain)
     gr.set_sensivity(self.sensivity)
+  def get_dict(self):
+    return {
+    "processed":self.processed,
+    "detected": self.detected,
+    "sqlch_thrsh": (self.squelch_threshold.default,self.squelch_threshold.default.value,self.squelch_threshold.min,self.squelch_threshold.max),
+    "sensivity'": (self.sensivity.default,self.sensivity.default.value,self.sensivity.min,self.sensivity.max),
+    "rf_gain": (self.rf_gain.default,self.rf_gain.default.value,self.rf_gain.min,self.rf_gain.max),
+    "gfsk_omega_limit": (self.gfsk_omega_limit.default,self.gfsk_omega_limit.default.value,self.gfsk_omega_limit.min,self.gfsk_omega_limit.max),
+    "gfsk_gain_mu": (self.gfsk_gain_mu.default,self.gfsk_gain_mu.default.value,self.gfsk_gain_mu.min,self.gfsk_gain_mu.max),
+    }
     
 
 
