@@ -1,7 +1,7 @@
 import pickle
 from grc.gr_ble import gr_ble as gr_block
-from optparse import OptionParser, OptionGroup
-from gnuradio.eng_option import eng_option
+from proto import *
+
 from datetime import datetime, timedelta
 from proto import *
 
@@ -24,15 +24,16 @@ from threading import Thread
 class SimulatePrm:
 	##constants
 	MIN_BUFFER_LEN=65
+	HOPE_TIME=1
 
 	def __init__(self):
-		self.filename = "comparison_data.csv"
+		self.filename = "v1_cutoff_prm_sim.csv"
 		self.param_time  = 10*60
 		# Initialize Gnu Radio
 		self.gr_block = gr_block()
 		self.gr_block.start()
 		# Initialize command line arguments
-		(self.opts, self.args) = init_opts(gr_block)
+		(self.opts, self.args) = init_opts(self.gr_block)
 		# Verify BLE channels argument
 		if ',' not in self.opts.current_ble_channels:
 			self.opts.current_ble_channels += ','
@@ -45,11 +46,11 @@ class SimulatePrm:
 		# Print capture settings
 		print_settings(self.gr_block, self.opts)
 		self.current_hop = 1
-		self.hopping_time = datetime.now() + timedelta(seconds=5*60)
+		self.hopping_time = datetime.now() + timedelta(minutes=self.HOPE_TIME)
 
 		# Set initial BLE channel
-		self.current_ble_chan = opts.scan_channels[0]
-		gr_block.set_ble_channel(BLE_CHANS[current_ble_chan])
+		self.current_ble_chan = self.opts.scan_channels[0]
+		self.gr_block.set_ble_channel(BLE_CHANS[self.current_ble_chan])
 
 		# Prepare Gnu Radio receive buffers
 		self.gr_buffer = ''
@@ -67,17 +68,21 @@ class SimulatePrm:
 	def run_simulation(self):
 		while True:
 			##set the new parameters using the simulation utilities
+
 			if datetime.now()>self.hopping_time:
-				self.hopping_time=datetime.now()+timedelta(seconds=5*60)
+				self.hopping_time=datetime.now()+timedelta(minutes=	self.HOPE_TIME)
+				print "moving to the next parameter"
 
 				##store the current data
-				model = deepcopy(data_model)
-				model_arr.append(model)
+				model = deepcopy(self.data_model.get_dict())
+				self.model_arr.append(model)
 				file_saver = SaveData(self.filename,self.model_arr);
 				file_saver.start()
 				##save the data
-				self.data_model.set_current_prm();
+				self.data_model.__set_prm__();
 				self.data_model.set_gr_params(self.gr_block);
+				self.data_model.detected=0
+				self.data_model.processed=0
 
 
 
@@ -95,16 +100,16 @@ class SimulatePrm:
 		  
 			# Search for BLE_PREAMBLE in received data
 			if self.lst_buffer=='':
-				self.lst_buffer=gr_buffer;
+				self.lst_buffer=self.gr_buffer;
 				return
-			_buffer = ''.join(str(x) for x in lst_buffer) + gr_buffer
-			conv = Convolution(search_term,_buffer);
+			_buffer = ''.join(str(x) for x in self.lst_buffer) + self.gr_buffer
+			#print "buffer length:",len(_buffer)
+			conv = Convolution(self.search_term,_buffer);
+			conv.convolve()
 
 			self.lst_buffer=''
-			self.lst_buffer=gr_buffer;
+			self.lst_buffer=self.gr_buffer;
 			self.gr_buffer=''
-			##running the convolution
-			conv = Convolution(target, gr_buffer)
 			if conv.info():
 				self.data_model.detected+=1
 		  
@@ -129,19 +134,14 @@ class SimulatePrm:
 				pos += BLE_ADDR_LEN
 
 				# Dewhitening received BLE Header
-				if opts.disable_dewhitening == False:
-				  ble_header = dewhitening(_buffer[pos:pos + BLE_PDU_HDR_LEN], current_ble_chan)
+				if self.opts.disable_dewhitening == False:
+				  ble_header = dewhitening(_buffer[pos:pos + BLE_PDU_HDR_LEN], self.current_ble_chan)
 				else:
 				  ble_header = _buffer[pos:pos + BLE_PDU_HDR_LEN]
 
 
 				# Check BLE PDU type
-				ble_pdu_type = ble_header[0] & 0x0f
-				adv_scan_ind = 0b0110==ble_pdu_type;
-
-				if ble_pdu_type not in BLE_PDU_TYPE.values():
-				  continue
-
+				
 
 				adver_packet = ble_access_address == BLE_ACCESS_ADDR
 				if ble_access_address == BLE_ACCESS_ADDR:
@@ -150,10 +150,19 @@ class SimulatePrm:
 				  continue
 				self.data_model.processed+=1;
 
+				###
+				ble_pdu_type = ble_header[0] & 0x0f
+				adv_scan_ind = 0b0110==ble_pdu_type;
+
+				if ble_pdu_type not in BLE_PDU_TYPE.values():
+				  continue
+
+
 
 
 class SaveData(Thread):
 	def __init__(self,filename,data):
+		Thread.__init__(self)
 		self.data = deepcopy(data);
 		self.filename = filename;
 	def run(self):

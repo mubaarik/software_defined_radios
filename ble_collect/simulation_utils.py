@@ -1,3 +1,8 @@
+from optparse import OptionParser, OptionGroup
+from gnuradio.eng_option import eng_option
+import itertools
+import random as rnd
+
 class GR_Parameter:
   def __init__(self,val=0,step=0, _min=0,_max=0):
     self.default = val;
@@ -7,6 +12,7 @@ class GR_Parameter:
     self.max = _max
   def incement(self):
     self.value+=self.step
+    self.value = round(self.value,6)
   def start(self):
     self.value=self.min;
   def set_default(self):
@@ -19,22 +25,48 @@ class ComparisonData:
     #self.transition_width = 300e3
     #self.sample_rate = 4e6
     #self.cutoff_freq = 850e3
-    self.squelch_threshold = GR_Parameter(-100,10,-150,-30)
+    self.squelch_threshold = GR_Parameter(-100,20,-150,-30)
     self.sensivity = GR_Parameter(1.0,0.1,0.7,1.0)
-    self.rf_gain = GR_Parameter(60,10,20,70)
+    self.rf_gain = GR_Parameter(60,10,30,70)
     self.gfsk_omega_limit = GR_Parameter(0.035,.01,.015,.105)
     self.gfsk_mu = 0.5
     self.gfsk_gain_mu = GR_Parameter(0.3,0.1, 0.1,.8)
+    self.cutoff_freq = GR_Parameter(800,100, 200,1000)
     #self.freq_offset =  GR_Parameter(0,.1,0,.4)
+    self.vars = [self.sensivity,self.gfsk_omega_limit,self.gfsk_gain_mu,self.cutoff_freq]
+    self.values = [self.get_all_values(var) for var in self.vars]
+    print "values:",self.values
+    self.states = list(itertools.product(*self.values))
+    rnd.shuffle(self.states)
+    self.index = 0
+    self.max_index = len(self.states)-1
+    print "states:",self.states[0:20]
+
 
 
 
     ##local control parameters
     self.current_param = self.squelch_threshold;
+  def get_all_values(self,gr_prm):
+    gr_prm.start()
+    values = [gr_prm.value]
+    while gr_prm.value<gr_prm.max:
+      gr_prm.incement()
+      values.append(gr_prm.value)
+    return values
+
+  def __set_prm__(self):
+    if self.index<self.max_index:
+      for ind,var in enumerate(self.vars):
+        var.value = self.states[self.index][ind];
+      self.index+=1;
+    else:
+      self.index=0
+
 
   def set_current_prm(self):
     ##current value
-    if self.current_param.value<self.current_param.min:
+    if self.current_param.value<self.current_param.max:
       self.current_param.incement()
     #next value
     else:
@@ -48,23 +80,25 @@ class ComparisonData:
       elif self.current_param==self.gfsk_omega_limit:
           self.current_param = self.gfsk_gain_mu
       else:
-          self.current_param=squelch_threshold;
+          self.current_param=self.squelch_threshold;
       self.current_param.start()
   def set_gr_params(self,gr):
-    gr.set_squelch_threshold(int(self.squelch_threshold))
-    gr.set_gfsk_gain_mu(self.gfsk_gain_mu)
-    gr.set_gfsk_omega_limit(self.gfsk_gain_mu)
-    gr.set_rf_gain(self.rf_gain)
-    gr.set_sensivity(self.sensivity)
+    gr.set_squelch_threshold(int(self.squelch_threshold.value))
+    gr.set_gfsk_gain_mu(self.gfsk_gain_mu.value)
+    gr.set_gfsk_omega_limit(self.gfsk_gain_mu.value)
+    gr.set_rf_gain(self.rf_gain.value)
+    gr.set_sensivity(self.sensivity.value)
+    gr.set_cutoff_freq(self.cutoff_freq.value*1000)
   def get_dict(self):
     return {
     "processed":self.processed,
     "detected": self.detected,
-    "sqlch_thrsh": (self.squelch_threshold.default,self.squelch_threshold.default.value,self.squelch_threshold.min,self.squelch_threshold.max),
-    "sensivity'": (self.sensivity.default,self.sensivity.default.value,self.sensivity.min,self.sensivity.max),
-    "rf_gain": (self.rf_gain.default,self.rf_gain.default.value,self.rf_gain.min,self.rf_gain.max),
-    "gfsk_omega_limit": (self.gfsk_omega_limit.default,self.gfsk_omega_limit.default.value,self.gfsk_omega_limit.min,self.gfsk_omega_limit.max),
-    "gfsk_gain_mu": (self.gfsk_gain_mu.default,self.gfsk_gain_mu.default.value,self.gfsk_gain_mu.min,self.gfsk_gain_mu.max),
+    #"sqlch_thrsh": self.squelch_threshold.value,#(self.squelch_threshold.default,self.squelch_threshold.value,self.squelch_threshold.min,self.squelch_threshold.max),
+    "sensivity'": self.sensivity.value,#(self.sensivity.default,self.sensivity.value,self.sensivity.min,self.sensivity.max),
+    #"rf_gain": self.rf_gain.value,#(self.rf_gain.default,self.rf_gain.value,self.rf_gain.min,self.rf_gain.max),
+    "gfsk_omega_limit": self.gfsk_omega_limit.value,#(self.gfsk_omega_limit.default,self.gfsk_omega_limit.value,self.gfsk_omega_limit.min,self.gfsk_omega_limit.max),
+    "gfsk_gain_mu": self.gfsk_gain_mu.value,#(self.gfsk_gain_mu.default,self.gfsk_gain_mu.value,self.gfsk_gain_mu.min,self.gfsk_gain_mu.max),
+    "cutoff_freq":self.cutoff_freq.value
     }
     
 
@@ -122,7 +156,7 @@ def init_opts(gr):
 
 
 
-def print_settings(gr_blk,options):
+def print_settings(gr,opts):
     print '\n ble-dump:  SDR Bluetooth LE packet dumper'
     print '\nCapture settings:'
     print ' %-22s: %s Hz' % ('Base Frequency', '{:d}'.format(int(gr.get_ble_base_freq())))

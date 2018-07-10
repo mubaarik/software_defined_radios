@@ -3,7 +3,7 @@ from  bitstring import BitArray
 import binascii
 
 ##
-BIT_ERROR_THRESHOLD = 3;
+BIT_ERROR_THRESHOLD = 2;
 COVL_RECORDING_THRESHOLD = 6
 
 def is_cmt_tag(data, target="b84c020"):
@@ -166,14 +166,15 @@ class Convolution:
     if max_match>(search_len-1)-BIT_ERROR_THRESHOLD:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
-      print "found advertisement packet length:",max_match," max packet length:",search_len, " bit errors: ", search_len - max_match 
+      #print "found advertisement packet length:",max_match," max packet length:",search_len, " bit errors: ", search_len - max_match 
       # print "max_match:",max_match
       # print "target vector: ", self.target_vect
       # print "search space:",self.search_vect[max(matching_index-8,0):]
       data = self.binary_to_hex(self.search_vect[matching_index:matching_index+search_len])
-      print "found matching:",data,'search vector:',self.binary_to_hex(self.target_vect);
+      #print "found matching:",data,'search vector:',self.binary_to_hex(self.target_vect);
       # print "map:", self.conv_map[max_match], len(self.search_vect)
       return True
+
     return False
 
 

@@ -265,14 +265,6 @@ if __name__ == '__main__':
             ble_header = _buffer[pos:pos + BLE_PDU_HDR_LEN]
           #print "Header:", ble_header
           
-          
-          # Check BLE PDU type
-          ble_pdu_type = ble_header[0] & 0x0f
-          adv_scan_ind = 0b0110==ble_pdu_type;
-
-          if ble_pdu_type not in BLE_PDU_TYPE.values():
-            #print "wrong type"
-            continue
 
 
           adver_packet = ble_access_address == BLE_ACCESS_ADDR
@@ -290,6 +282,15 @@ if __name__ == '__main__':
             if ble_llid == 0:
               #print "could not extract BLE Lengh"
               continue
+
+
+          
+          # Check BLE PDU type
+          ble_pdu_type = ble_header[0] & 0x0f
+          adv_scan_ind = 0b0110==ble_pdu_type;
+
+          if ble_pdu_type not in BLE_PDU_TYPE.values():
+            continue
 
             # Extract BLE Length
             ble_len = ble_header[1] & 0x1f

@@ -4,13 +4,14 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Tue Jul  3 11:11:48 2018
+# Generated: Mon Jul  9 11:39:32 2018
 ##################################################
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import eng_notation
+from gnuradio import filter
 from gnuradio import gr
 from gnuradio import uhd
 from gnuradio.eng_option import eng_option
@@ -28,15 +29,15 @@ class gr_ble(gr.top_block):
         # Variables
         ##################################################
         self.transition_width = transition_width = 300e3
-        self.sample_rate = sample_rate = 4e6
+        self.sample_rate = sample_rate = 2e6
         self.data_rate = data_rate = 1e6
         self.cutoff_freq = cutoff_freq = 850e3
         self.ble_channel_spacing = ble_channel_spacing = 2e6
         self.ble_channel = ble_channel = 12
         self.ble_base_freq = ble_base_freq = 2402e6
-        self.squelch_threshold = squelch_threshold = -120
+        self.squelch_threshold = squelch_threshold = -105
         self.sensivity = sensivity = 1.0
-        self.rf_gain = rf_gain = 70
+        self.rf_gain = rf_gain = 75
         self.lowpass_filter = lowpass_filter = firdes.low_pass(1, sample_rate, cutoff_freq, transition_width, firdes.WIN_HAMMING, 6.76)
         self.gfsk_sps = gfsk_sps = int(sample_rate / data_rate)
         self.gfsk_omega_limit = gfsk_omega_limit = 0.035
@@ -63,6 +64,7 @@ class gr_ble(gr.top_block):
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(rf_gain, 0)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), 0, sample_rate)
         self.digital_gfsk_demod_0 = digital.gfsk_demod(
         	samples_per_symbol=gfsk_sps,
         	sensitivity=sensivity,
@@ -75,16 +77,17 @@ class gr_ble(gr.top_block):
         )
         self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
         self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
-        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_threshold, .1, 0, True)
+        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_threshold, 1e-4, 0, True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_pwr_squelch_xx_0, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.analog_pwr_squelch_xx_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_message_sink_0, 0))
         self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.digital_gfsk_demod_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
 
     def get_transition_width(self):
@@ -99,9 +102,9 @@ class gr_ble(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.set_lowpass_filter(firdes.low_pass(1, self.sample_rate, self.cutoff_freq, self.transition_width, firdes.WIN_HAMMING, 6.76))
         self.set_gfsk_sps(int(self.sample_rate / self.data_rate))
         self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
-        self.set_lowpass_filter(firdes.low_pass(1, self.sample_rate, self.cutoff_freq, self.transition_width, firdes.WIN_HAMMING, 6.76))
 
     def get_data_rate(self):
         return self.data_rate
@@ -164,6 +167,7 @@ class gr_ble(gr.top_block):
 
     def set_lowpass_filter(self, lowpass_filter):
         self.lowpass_filter = lowpass_filter
+        self.freq_xlating_fir_filter_xxx_0.set_taps((self.lowpass_filter))
 
     def get_gfsk_sps(self):
         return self.gfsk_sps
