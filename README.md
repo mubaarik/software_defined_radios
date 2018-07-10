@@ -19,4 +19,27 @@
 - [ ] ....
 
 
+## GNU Radio Project for Scanning Bluetooth LE Advertisement packets 
+
+This project uses [ble dump]() as starting point. 
+
+### Hardware 
+
+USRP B210 and ISM range antenna were used to implement this project. More one the USRP device and potential other Ettus candidate devices, please visit [ettus.com](https://www.ettus.com). The first antenna used for the project was the LP0965 by Ettus research.
+
+### Software 
+
+This is GNU Radio based project and it uses [ble dump]() as starting point.
+
+#### Simulation_utils
+
+#### Parameteric_simulations
+
+### ble dump
+
+### Ble dump Utils 
+
+#### GRC 
+
+
 

@@ -552,7 +552,7 @@
     <key>analog_pwr_squelch_xx</key>
     <param>
       <key>alpha</key>
-      <value>.1</value>
+      <value>1e-4</value>
     </param>
     <param>
       <key>alias</key>
@@ -572,7 +572,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(280, 280)</value>
+      <value>(296, 288)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -782,6 +782,65 @@
     <param>
       <key>verbose</key>
       <value>False</value>
+    </param>
+  </block>
+  <block>
+    <key>freq_xlating_fir_filter_xxx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>center_freq</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>decim</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(472, 292)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>freq_xlating_fir_filter_xxx_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>samp_rate</key>
+      <value>sample_rate</value>
+    </param>
+    <param>
+      <key>taps</key>
+      <value>lowpass_filter</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>ccc</value>
     </param>
   </block>
   <block>
@@ -2152,7 +2211,7 @@
   </block>
   <connection>
     <source_block_id>analog_pwr_squelch_xx_0</source_block_id>
-    <sink_block_id>digital_gfsk_demod_0</sink_block_id>
+    <sink_block_id>freq_xlating_fir_filter_xxx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2171,6 +2230,12 @@
   <connection>
     <source_block_id>digital_gfsk_demod_0</source_block_id>
     <sink_block_id>blocks_unpacked_to_packed_xx_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>freq_xlating_fir_filter_xxx_0</source_block_id>
+    <sink_block_id>digital_gfsk_demod_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
