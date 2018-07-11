@@ -27,7 +27,7 @@ class SimulatePrm:
 	HOPE_TIME=1
 
 	def __init__(self):
-		self.filename = "v1_cutoff_prm_sim.csv"
+		self.filename = "v2_cutoff_prm_sim.csv"
 		self.param_time  = 10*60
 		# Initialize Gnu Radio
 		self.gr_block = gr_block()

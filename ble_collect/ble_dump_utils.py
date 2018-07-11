@@ -48,10 +48,9 @@ class Convolution:
   def __init__(self,target, gr_buffer):
     self.target_vect = self.hex_to_binary(target);
     self.search_vect = self.gr_buffer_to_binary_array(gr_buffer)
-    #print "target vector:",self.target_vect
-    #print "search vector:", self.search_vect
+    
 
-    self.index = 0#len(self.target_vect)
+    self.index = 0
     self.n = len(self.target_vect)
     self.conv_map = {};
   def convolve(self):
@@ -73,17 +72,19 @@ class Convolution:
 
 
   def compute_hamming_distance(self):
-    ##segment of the buffer data to be XORed with the target vector 
+    """
+    compute hamming distance between @target_vect and segment of the buffer
+    """
+    
     xor_segment = self.search_vect[self.index:self.index+self.n];
-    #Sprint "sengment:",xor_segment,"target:", self.target_vect
-    ###########
+    
     if len(xor_segment)!=len(self.target_vect):
-      #print "segment length: ", len(xor_segment), "binary_array len:", len(self.target_vect)
-      #print xor_segment,type(xor_segment)
       return None
+
     target = self.binary_to_integer(self.target_vect)
+
     new_segment  = self.binary_to_integer(xor_segment)
-    ########
+ 
     return self.n-"{0:b}".format(target^new_segment).count('1');
 
 
@@ -161,18 +162,15 @@ class Convolution:
     
     search_len = len(self.target_vect)
     max_match = 0
+
     if self.conv_map:
       max_match = max(self.conv_map.keys())
+      
     if max_match>(search_len-1)-BIT_ERROR_THRESHOLD:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
-      #print "found advertisement packet length:",max_match," max packet length:",search_len, " bit errors: ", search_len - max_match 
-      # print "max_match:",max_match
-      # print "target vector: ", self.target_vect
-      # print "search space:",self.search_vect[max(matching_index-8,0):]
+
       data = self.binary_to_hex(self.search_vect[matching_index:matching_index+search_len])
-      #print "found matching:",data,'search vector:',self.binary_to_hex(self.target_vect);
-      # print "map:", self.conv_map[max_match], len(self.search_vect)
       return True
 
     return False

@@ -4,6 +4,18 @@ import itertools
 import random as rnd
 
 class GR_Parameter:
+  '''
+  class representing a GR block parameter(e.g. sample_rate)
+  @parameters
+  1. default: The default value of the parameter
+  2. value: Current value of the parameter
+  3. step: For trying different values of the parameter for tuning, this change from one parameter to the next.
+  3. min/max:upper and lower bounds of the parameter
+  @Methods 
+  1. increment: increment the current value of the parameter by @step
+  2. start: set the current value to the minimum
+  3. set_defafult: Set the parameter value to the default value
+  '''
   def __init__(self,val=0,step=0, _min=0,_max=0):
     self.default = val;
     self.value = val
@@ -19,43 +31,51 @@ class GR_Parameter:
     self.value=self.default
 
 class ComparisonData:
+  """
+  This class encapsulates multiple GR_parameters for tuning 
+  """
   def __init__(self):
+    #objective parameters 
     self.detected = 0
     self.processed = 0
-    #self.transition_width = 300e3
-    #self.sample_rate = 4e6
-    #self.cutoff_freq = 850e3
+    #tuning parameters
     self.squelch_threshold = GR_Parameter(-100,20,-150,-30)
     self.sensivity = GR_Parameter(1.0,0.1,0.7,1.0)
     self.rf_gain = GR_Parameter(60,10,30,70)
-    self.gfsk_omega_limit = GR_Parameter(0.035,.01,.015,.105)
+    self.gfsk_omega_limit = GR_Parameter(0.035,.01,.015,.205)
     self.gfsk_mu = 0.5
-    self.gfsk_gain_mu = GR_Parameter(0.3,0.1, 0.1,.8)
-    self.cutoff_freq = GR_Parameter(800,100, 200,1000)
-    #self.freq_offset =  GR_Parameter(0,.1,0,.4)
+    self.gfsk_gain_mu = GR_Parameter(0.3,0.1, 0.1,1.0)
+    self.cutoff_freq = GR_Parameter(800,100, 600,1000)
+
+    #Preparing the tuning parameters 
     self.vars = [self.sensivity,self.gfsk_omega_limit,self.gfsk_gain_mu,self.cutoff_freq]
     self.values = [self.get_all_values(var) for var in self.vars]
-    print "values:",self.values
     self.states = list(itertools.product(*self.values))
     rnd.shuffle(self.states)
+    
+
+    ##Other local control parameters
+    self.current_param = self.squelch_threshold;
     self.index = 0
     self.max_index = len(self.states)-1
-    print "states:",self.states[0:20]
-
-
-
-
-    ##local control parameters
-    self.current_param = self.squelch_threshold;
+  
   def get_all_values(self,gr_prm):
+    """
+    @gr_prm: Instance of GR_Parameter
+    generate all the possible parameters of @gr_prm as a list 
+    """
     gr_prm.start()
     values = [gr_prm.value]
     while gr_prm.value<gr_prm.max:
       gr_prm.incement()
       values.append(gr_prm.value)
     return values
+  
 
   def __set_prm__(self):
+    """
+    Set the values of the tuned parameters to new state(set of values)
+    """
     if self.index<self.max_index:
       for ind,var in enumerate(self.vars):
         var.value = self.states[self.index][ind];
@@ -83,6 +103,10 @@ class ComparisonData:
           self.current_param=self.squelch_threshold;
       self.current_param.start()
   def set_gr_params(self,gr):
+    """
+    @gr: GR_BLOCK object(gr_ble object)
+    Set values of the GR_block parameters d
+    """
     gr.set_squelch_threshold(int(self.squelch_threshold.value))
     gr.set_gfsk_gain_mu(self.gfsk_gain_mu.value)
     gr.set_gfsk_omega_limit(self.gfsk_gain_mu.value)
@@ -90,6 +114,9 @@ class ComparisonData:
     gr.set_sensivity(self.sensivity.value)
     gr.set_cutoff_freq(self.cutoff_freq.value*1000)
   def get_dict(self):
+    """
+    generate a quick dictionary of the current parameter name to current value for csv storage
+    """
     return {
     "processed":self.processed,
     "detected": self.detected,
