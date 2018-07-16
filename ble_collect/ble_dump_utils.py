@@ -1,9 +1,10 @@
 
 from  bitstring import BitArray
 import binascii
+import time
 
 ##
-BIT_ERROR_THRESHOLD = 2;
+BIT_ERROR_THRESHOLD = 7;
 COVL_RECORDING_THRESHOLD = 6
 
 def is_cmt_tag(data, target="b84c020"):
@@ -54,10 +55,10 @@ class Convolution:
     self.n = len(self.target_vect)
     self.conv_map = {};
   def convolve(self):
-
     while True:
       try:
         xor_result = self.compute_hamming_distance()
+        
         if xor_result==None:
           return self.conv_map
         if xor_result>self.n-COVL_RECORDING_THRESHOLD:
@@ -65,6 +66,7 @@ class Convolution:
             self.conv_map[xor_result].append(self.index);
           else:
             self.conv_map[xor_result]=[self.index];
+            
 
         self.index+=1;
       except IndexError:
@@ -165,15 +167,68 @@ class Convolution:
 
     if self.conv_map:
       max_match = max(self.conv_map.keys())
+    
       
     if max_match>(search_len-1)-BIT_ERROR_THRESHOLD:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
 
-      data = self.binary_to_hex(self.search_vect[matching_index:matching_index+search_len])
+      data = self.binary_to_hex(self.search_vect[matching_index:matching_index+4*search_len])
+      print "detected:", data
       return True
-
+    #print "found nothing"
     return False
+
+class CollectionThread(Thread):
+  def __init__(self, _key_="",_buff_="", err_thresh = BIT_ERROR_THRESHOLD):
+    Thread.init(self);
+    self.data_buffer = _buff_;
+    self.key = _key_;
+    self.err_thresh = err_thresh
+    ##data cutOffs
+    self.low_cutOff = 0;
+    self.high_cutOff = 0;
+    self.filename = "ble_data_files/detection_"+self.key+".csv";
+
+  def run(self):
+    conv = Convolution(self.key,self.data_buffer);
+    conv.convolve();
+
+    max_match = 0
+    if conv.conv_map:
+      max_match =max(conv.conv_map.keys())
+
+    if max_match>(conv.n-1)-self.err_thresh:
+      matching_index
+      
+
+      time = time.time()
+      key = self.key;
+      detected = self.binary_to_hex(self.search_vect[max(0,matching_index-low_cutOff):matching_index+high_cutOff])
+      error = conv.n - max_match;
+      context = {"time":time,"key":key,"detected":detected,"error":error}
+
+      df = pd.read_csv(self.filename);
+      df2 = pd.DataFrame(context);
+      df.append(df2);
+      df.to_csv(self.filename)
+class Expanded:
+  def __init__(self, _buff_,keys = []):
+    self._buff_ = _buff_;
+    self.keys = keys;
+  def __map__(self):
+    for key in self.keys:
+      collector = CollectionThread(_key_ = key.key,_buff_ = self._buff_,err_thresh=key.err_thresh);
+      collector.low_cutOff = key.low_cutOff;
+      collector.high_cutOff = key.high_cutOff;
+      collector.start();
+class SrchKey:
+  def __init__(self,key,low_cutOff,high_cutOff,err_thresh):
+    self.key = key;
+    self.low_cutOff = low_cutOff;
+    self.high_cutOff = high_cutOff;
+    self.err_thresh = err_thresh;
+
 
 
 

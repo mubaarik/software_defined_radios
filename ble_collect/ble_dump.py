@@ -10,26 +10,46 @@
 #  (at your option) any later version.
 #
 '''
-aad6be898ed4e0ab617df259c319a4ab5984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca768f3dd
+aad6be898ed4e0 ab 61 7d f2 59 c3 19 a4 ab5984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca768f3dd
 0225ef41242cb84c0201041bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5f8bb534
 
-aad6be898ed4e1ab617df259c319a4ab588402cd62fe55c151b508b4880378ab3c2f475f3ce7153da7d7b24ca02f
+aad6be898ed4e1 ab 61 7d f2 59 c3 19 a4 ab588402cd62fe55c151b508b4880378ab3c2f475f3ce7153da7d7b24ca02f
 0224ef41242cb84c0201041aff4c00021537e3c199e7444f8eaafc9d12e0398c92242cef41c5b44369
 
-aad6be898ed6e1ab617df259c319a4a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
+aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
 0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed6e0ab617df259c319a4a95984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca734bc45
+aad6be898ed6e0 ab 61 7d f2 59 c3 19 a4 a95984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca734bc45
 0025ef41242cb84c0201061bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5fd7faac
 
-aad6be898ed6e1ab617df259c319a4a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
+aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
 0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed6e1ab617df259c319a4a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
+aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
 0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875
+aad6be898ed4e0 ab 61 7d f2 59 c3 19 a4 ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875
 0225ef41242cb84c0201041bffff1e136b53a13b3c7ace8f1deb8a9a0b840c998581d7b02c7741529e9c
+
+
+aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
+aad6be898e 95 c9 e1 77 48 51 36 ca f4 e4 8b 6e c3 02 2cfa46
+aad6be898e 95 c9 e1 77 48 51 36 ca f4 e4 8b6ec3022cfa46
+aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
+aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
+aad6be898e 95 c9 1e 67 8c 17 ea e9 f4 e4 8b6ec302f7a52b
+aad6be898e 95 c9 1e 67 8c 17 ea e9 f4 e4 8b6ec302f7a52b
+
+aad6be898e 95 c9 d1 76 dc 54 32 d4 f4 e4 8b6ec3026606ba
+aad6be898e 95 c9 d1 76 dc 54 32 d4 f4 e4 8b6ec3026606ba
+aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
+aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
+aad6be898e 95 c9 6e a5 9f 0a d5 d0 f4 e4 8b6ec30265c41c
+aad6be898e 95 c9 6e a5 9f 0a d5 d0 f4 e4 8b6ec30265c41c
+aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
+aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
+aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
+aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
 '''
 import pickle
 from grc.gr_ble import gr_ble as gr_block
@@ -41,6 +61,7 @@ from proto import *
 import numpy as np
 import time
 import pandas as pd
+from threading import Thread
 from ble_dump_utils import *
 ##########    aa d6 be 89 8e d4 e1 bd 3f 46 f2 59 c3 19 a4a
 TARGET_ONE = "aad6be898ed4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875"#"aad6be898ed4e0ab617df259c3"
@@ -72,6 +93,16 @@ def print_settings(gr, opts):
 
   print '\n%-23s: %s\n' % ('PCAP output file', '{:s}'.format(opts.pcap_file))
 
+class SaveBlenPackets(Thread):
+  def __init__(self,data):
+    Thread.__init__(self)
+    self.data = data;
+    self.filename = "ble_data1.csv"
+  def run(self):
+    data_df = pd.DataFrame(self.data);
+    data_df.to_csv(self.filename)
+
+
 # Setup Gnu Radio with defined command line arguments
 def init_args(gr, opts):
   gr.set_sample_rate(int(opts.sample_rate))
@@ -91,7 +122,7 @@ def init_opts(gr):
   # Capture
   capture = OptionGroup(parser, 'Capture settings')
   capture.add_option("-o", "--pcap_file", type="string", default='', help="PCAP output file or named pipe (FIFO)")
-  capture.add_option("-m", "--min_buffer_size", type="int", default=65, help="Minimum buffer size [default=%default]")
+  capture.add_option("-m", "--min_buffer_size", type="int", default=1065, help="Minimum buffer size [default=%default]")
   capture.add_option("-s", "--sample-rate", type="eng_float", default=gr.sample_rate, help="Sample rate [default=%default]")
   capture.add_option("-t", "--squelch_threshold", type="eng_float", default=gr.squelch_threshold, help="Squelch threshold (simple squelch) [default=%default]")
 
@@ -121,10 +152,13 @@ def init_opts(gr):
   return parser.parse_args()
 
 
+segments = ["f4e48b6ec302","aad6be898e95c9","aad6be898e95"]
 if __name__ == '__main__':
   MIN_BUFFER_LEN = 4*65
   ###The main data map
   data_map = DataMap()
+  ###saving the data to a file
+  ble_packets = []
 
   # Initialize Gnu Radio
   gr_block = gr_block()
@@ -186,7 +220,6 @@ if __name__ == '__main__':
       #   print 'Switching to BLE channel [ {:d} ] @ {:d} MHz'.format(current_ble_chan, int(gr_block.get_freq() / 1000000))
 
       # Fetch data from Gnu Radio message queue
-      #time.sleep(1)
       gr_buffer += gr_block.message_queue.delete_head().to_string()
 
       if len(gr_buffer) > opts.min_buffer_size:
@@ -197,31 +230,17 @@ if __name__ == '__main__':
 
         # Search for BLE_PREAMBLE in received data
         
-        search_term = '0xaad6be898e'#TARGET_ONE##'0xaa8E89BED6'#'0xaa'#'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
-        #conv = Convolution(search_term,lst_buffer);
-        #conv1 = Convolution(search_term,_buffer);
+        search_term = '0xaad6be898e95c9736c4e8de9d9f4e48b6ec302'#'0xab617df259c319a4'##'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
+      
         
         search_len = 4*(len(search_term)-2);
 
-        
-        #conv.convolve();
-        # max_match = 0
-        # if conv.conv_map:
-        #   max_match = max(conv.conv_map.keys())
-        # if max_match>search_len-5:
-        #   data_map.add(conv)
-        #Call the print function here
-        #conv.info()
-        #print "print _utils", gr_buffer
         if lst_buffer=='':
           lst_buffer=gr_buffer;
           continue
         _buffer = ''.join(str(x) for x in lst_buffer) + gr_buffer
         conv = Convolution(search_term,_buffer);
-        # print "lst_search:", conv.search_vect
-        # print "combined buffer search vector:",conv1.search_vect
-        # #_buffer = lst_buffer+gr_buffer
-        # print "Contain the older old buffer:", lst_buffer in _buffer
+      
         lst_buffer=''
         lst_buffer=gr_buffer;
         gr_buffer=''
@@ -269,18 +288,15 @@ if __name__ == '__main__':
 
           adver_packet = ble_access_address == BLE_ACCESS_ADDR
           if ble_access_address == BLE_ACCESS_ADDR:
-            #print "Me too!"#, [ord(d) for d in _buffer]
-            # Extract BLE Length
-            print ""
-            print "access address"
-            print ""
+            #print ""
+            #print "access address"
+            #print ""
             ble_len = ble_header[1] & 0x3f
           else:
             ##skip non-advertiment packets
             continue
             ble_llid = ble_header[0] & 0x3
             if ble_llid == 0:
-              #print "could not extract BLE Lengh"
               continue
 
 
@@ -292,11 +308,11 @@ if __name__ == '__main__':
           if ble_pdu_type not in BLE_PDU_TYPE.values():
             continue
 
-            # Extract BLE Length
-            ble_len = ble_header[1] & 0x1f
+          # Extract BLE Length
+          ble_len = ble_header[1] & 0x1f
+
 
           # Dewhitening BLE packet
-          #original_data = unpack('I', gr_buffer[pos:pos + BLE_ADDR_LEN])[0]
           if opts.disable_dewhitening == False:
             ble_data = dewhitening(_buffer[pos:pos + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len], current_ble_chan)
           else:
@@ -312,7 +328,6 @@ if __name__ == '__main__':
           #lost_data = _buffer[pos:]
           if len(ble_data) != (BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len):
             #lost_data = _buffer[pos - BLE_PREAMBLE_LEN - BLE_ADDR_LEN:pos + BLE_PREAMBLE_LEN + BLE_ADDR_LEN + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len]
-            #print "Could not verify the BLE data length"
             if is_cmt_tag(mac_address):
               print "length of the data:", ble_len
               print "expected length:",(BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len), "data length:",len(ble_data)
@@ -347,11 +362,18 @@ if __name__ == '__main__':
             if mac_address[-3:] == 'ef41242cb84c':
               print "buffer:", [ord(d) for d in _buffer]
           else:
+            ##
+            #_packet_ = {"raw":binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]])),"packet":mac_address}
+            # print "raw:",binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
+            # print "packet:", mac_address
+            ble_packets.append(_packet_);
+            thread = SaveBlenPackets(ble_packets);
+            thread.start()
+
             continue
           # print "writing data"
-          # print "length of the buffer", len(_buffer)
+          print "length of the buffer", len(_buffer)
           # Write BLE packet to PCAP file descriptor
-          #print "writing the pcap file"
           write_pcap(pcap_fd, current_ble_chan, ble_access_address, ble_data)
           # for i in range(int(10e6)):
           #   8+9;
@@ -364,3 +386,6 @@ pd.DataFrame([rejected_data_map]).to_csv("rejected_data1.csv")
 pcap_fd.close()
 gr_block.stop()
 gr_block.wait()
+
+
+
