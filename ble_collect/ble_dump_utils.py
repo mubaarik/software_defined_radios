@@ -2,9 +2,10 @@
 from  bitstring import BitArray
 import binascii
 import time
+from threading import Thread
 
 ##
-BIT_ERROR_THRESHOLD = 7;
+BIT_ERROR_THRESHOLD = 2;
 COVL_RECORDING_THRESHOLD = 6
 
 def is_cmt_tag(data, target="b84c020"):
@@ -46,7 +47,7 @@ def search_bites(byte1,byte2,gr_buffer,num_bites):
     old_bytes.push(byte)
 
 class Convolution:
-  def __init__(self,target, gr_buffer):
+  def __init__(self,target, gr_buffer,detected_addr):
     self.target_vect = self.hex_to_binary(target);
     self.search_vect = self.gr_buffer_to_binary_array(gr_buffer)
     
@@ -54,6 +55,9 @@ class Convolution:
     self.index = 0
     self.n = len(self.target_vect)
     self.conv_map = {};
+    #####
+    #####
+    self.detected_addr = detected_addr
   def convolve(self):
     while True:
       try:
@@ -173,7 +177,8 @@ class Convolution:
       matching_index = min(self.conv_map[max_match])
       strt = max(0,matching_index-8)
 
-      data = self.binary_to_hex(self.search_vect[matching_index:matching_index+4*search_len])
+      data = self.binary_to_hex(self.search_vect[matching_index:matching_index+9*search_len])
+      self.detected_addr.append(data)
       print "detected:", data
       return True
     #print "found nothing"

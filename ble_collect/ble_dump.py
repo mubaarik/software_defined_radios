@@ -67,6 +67,8 @@ from ble_dump_utils import *
 TARGET_ONE = "aad6be898ed4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875"#"aad6be898ed4e0ab617df259c3"
 
 TARGET_TWO = "aad6be898ed6e1ab617df259c319a4a9588402cd62fe571c85f1dac587fb4dde84eb85171de3153da7d7b2e47adf"
+
+
 # Print current Gnu Radio capture settings
 def print_settings(gr, opts):
   print '\n ble-dump:  SDR Bluetooth LE packet dumper'
@@ -122,7 +124,7 @@ def init_opts(gr):
   # Capture
   capture = OptionGroup(parser, 'Capture settings')
   capture.add_option("-o", "--pcap_file", type="string", default='', help="PCAP output file or named pipe (FIFO)")
-  capture.add_option("-m", "--min_buffer_size", type="int", default=1065, help="Minimum buffer size [default=%default]")
+  capture.add_option("-m", "--min_buffer_size", type="int", default=165, help="Minimum buffer size [default=%default]")
   capture.add_option("-s", "--sample-rate", type="eng_float", default=gr.sample_rate, help="Sample rate [default=%default]")
   capture.add_option("-t", "--squelch_threshold", type="eng_float", default=gr.squelch_threshold, help="Squelch threshold (simple squelch) [default=%default]")
 
@@ -152,7 +154,12 @@ def init_opts(gr):
   return parser.parse_args()
 
 
-segments = ["f4e48b6ec302","aad6be898e95c9","aad6be898e95"]
+# segments = ["f4e48b6ec302","aad6be898e95c9","aad6be898e95"]
+# KEYS = [SrchKey("f4e48b6ec302",48,48,3),SrchKey("aad6be898e",40,40,2),SrchKey("aad6be898e95c9",56,56,3),SrchKey("aad6be898e95c9faf6dd449aecf4e48b6ec302",4,168,12),
+# SrchKey("aad6be898e95c97c7f5d52bbdaf4e48b6ec302",4,168,12),SrchKey("aad6be898e95c9fbc43ad169e8f4e48b6ec302",4,168,12),SrchKey("aad6be898e95c9fdc1b57143cbf4e48b6ec302",4,168,12),
+# SrchKey("aad6be898e95c9396f12e0edccf4e48b6ec302",4,168,12),SrchKey("aad6be898e95c934acace5afccf4e48b6ec302",4,168,12),SrchKey("aad6be898e95c96b8d75ee4ef5f4e48b6ec302",4,168,12),
+# SrchKey("aad6be898e95c9df0978eb69f0f4e48b6ec302",4,168,12),SrchKey("aad6be898e95c9fcb2c985fef8f4e48b6ec302",4,268,12),SrchKey("aad6be898e95c99a124e3212f0f4e48b6ec302",4,168,12),
+# SrchKey("aad6be898e95c925ce863719e3f4e48b6ec302",4,168,12),SrchKey("aad6be898e95c9182f0c622bc5f4e48b6ec302",4,168,12),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey()]
 if __name__ == '__main__':
   MIN_BUFFER_LEN = 4*65
   ###The main data map
@@ -174,6 +181,7 @@ if __name__ == '__main__':
   # Verify BLE channels argument
   if ',' not in opts.current_ble_channels:
     opts.current_ble_channels += ','
+  detected_addr = []
 
   # Prepare BLE channels argument
   opts.scan_channels = [int(x) for x in opts.current_ble_channels.split(',')]
@@ -230,7 +238,7 @@ if __name__ == '__main__':
 
         # Search for BLE_PREAMBLE in received data
         
-        search_term = '0xaad6be898e95c9736c4e8de9d9f4e48b6ec302'#'0xab617df259c319a4'##'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
+        search_term = '0xaad6be898e'#'0xab617df259c319a4'##'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
       
         
         search_len = 4*(len(search_term)-2);
@@ -239,7 +247,7 @@ if __name__ == '__main__':
           lst_buffer=gr_buffer;
           continue
         _buffer = ''.join(str(x) for x in lst_buffer) + gr_buffer
-        conv = Convolution(search_term,_buffer);
+        conv = Convolution(search_term,_buffer,detected_addr);
       
         lst_buffer=''
         lst_buffer=gr_buffer;
@@ -366,9 +374,9 @@ if __name__ == '__main__':
             #_packet_ = {"raw":binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]])),"packet":mac_address}
             # print "raw:",binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
             # print "packet:", mac_address
-            ble_packets.append(_packet_);
-            thread = SaveBlenPackets(ble_packets);
-            thread.start()
+            #ble_packets.append(_packet_);
+            #thread = SaveBlenPackets(ble_packets);
+            #thread.start()
 
             continue
           # print "writing data"
@@ -382,6 +390,11 @@ if __name__ == '__main__':
 
   except KeyboardInterrupt:
     pass
+###data
+print "data packets"
+pd.DataFrame(detected_addr).to_csv("picked_packets.csv")
+
+
 pd.DataFrame([rejected_data_map]).to_csv("rejected_data1.csv")
 pcap_fd.close()
 gr_block.stop()
