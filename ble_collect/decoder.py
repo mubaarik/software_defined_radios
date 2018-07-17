@@ -2,6 +2,7 @@ from proto import *
 #####
 disable_dewhitening = False
 #####
+__map__=[]
 def generate_buffer(data):
 	l = len(data)-(len(data)%2)*1
 	
@@ -16,6 +17,7 @@ def compute_hamnming_distance(data,target="2cb84c", thresh=2):
 		binary = binary1.count('0')
 		if binary>=len(target)*4-thresh or binary1=='0b0':
 			print "mac_address:",data
+			__map__.append(data)
 		start+=1
 		end+=1
 

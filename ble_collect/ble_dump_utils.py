@@ -8,7 +8,7 @@ from threading import Thread
 BIT_ERROR_THRESHOLD = 2;
 COVL_RECORDING_THRESHOLD = 6
 
-def is_cmt_tag(data, target="b84c020"):
+def is_cmt_tag(data, target="2cb84c"):
   return target in data
 class DataMap:
   def __init__(self):

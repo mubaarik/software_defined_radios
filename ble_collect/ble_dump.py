@@ -124,7 +124,7 @@ def init_opts(gr):
   # Capture
   capture = OptionGroup(parser, 'Capture settings')
   capture.add_option("-o", "--pcap_file", type="string", default='', help="PCAP output file or named pipe (FIFO)")
-  capture.add_option("-m", "--min_buffer_size", type="int", default=165, help="Minimum buffer size [default=%default]")
+  capture.add_option("-m", "--min_buffer_size", type="int", default=85, help="Minimum buffer size [default=%default]")
   capture.add_option("-s", "--sample-rate", type="eng_float", default=gr.sample_rate, help="Sample rate [default=%default]")
   capture.add_option("-t", "--squelch_threshold", type="eng_float", default=gr.squelch_threshold, help="Squelch threshold (simple squelch) [default=%default]")
 
@@ -232,26 +232,21 @@ if __name__ == '__main__':
 
       if len(gr_buffer) > opts.min_buffer_size:
         # Prepend lost data
-        if len(lost_data) > 0:
-          gr_buffer = ''.join(str(x) for x in lost_data) + gr_buffer
-          lost_data = ''
+        _buffer= ''.join(str(x) for x in lost_data) + gr_buffer
+        lost_data = gr_buffer[-20:];
 
-        # Search for BLE_PREAMBLE in received data
+
+
+
+        
+        
         
         search_term = '0xaad6be898e'#'0xab617df259c319a4'##'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
       
-        
-        search_len = 4*(len(search_term)-2);
 
-        if lst_buffer=='':
-          lst_buffer=gr_buffer;
-          continue
-        _buffer = ''.join(str(x) for x in lst_buffer) + gr_buffer
+       
         conv = Convolution(search_term,_buffer,detected_addr);
-      
-        lst_buffer=''
-        lst_buffer=gr_buffer;
-        gr_buffer=''
+
         ##test
         conv.convolve();
         conv.info()
@@ -263,20 +258,14 @@ if __name__ == '__main__':
 
        
 
-
+        # Search for BLE_PREAMBLE in received data
         for pos in [position for position, byte, in enumerate(_buffer) if byte == BLE_PREAMBLE]:
-
-          
-          #print "Found the BLE_PREAMBLE"
           pos += BLE_PREAMBLE_LEN
 
           # Check enough data is available for parsing the BLE Access Address
           if len(_buffer[pos:]) < (BLE_ADDR_LEN + BLE_PDU_HDR_LEN):
-            #print "Non enough data"
             continue
-          #print "printing the buffer", gr_buffer
-          invertor  = 0x71764129
-          actual_access_address = 0x8E89BED6
+  
 
           # Extract BLE Access Address
           ble_access_address = unpack('I', _buffer[pos:pos + BLE_ADDR_LEN])[0]
@@ -290,28 +279,17 @@ if __name__ == '__main__':
             ble_header = dewhitening(_buffer[pos:pos + BLE_PDU_HDR_LEN], current_ble_chan)
           else:
             ble_header = _buffer[pos:pos + BLE_PDU_HDR_LEN]
-          #print "Header:", ble_header
           
-
-
-          adver_packet = ble_access_address == BLE_ACCESS_ADDR
+          #check for advertisement access addr
           if ble_access_address == BLE_ACCESS_ADDR:
-            #print ""
-            #print "access address"
-            #print ""
             ble_len = ble_header[1] & 0x3f
           else:
-            ##skip non-advertiment packets
             continue
-            ble_llid = ble_header[0] & 0x3
-            if ble_llid == 0:
-              continue
 
 
           
           # Check BLE PDU type
           ble_pdu_type = ble_header[0] & 0x0f
-          adv_scan_ind = 0b0110==ble_pdu_type;
 
           if ble_pdu_type not in BLE_PDU_TYPE.values():
             continue
@@ -325,6 +303,8 @@ if __name__ == '__main__':
             ble_data = dewhitening(_buffer[pos:pos + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len], current_ble_chan)
           else:
             ble_data = _buffer[pos:pos + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len]
+
+          
           
           #print "ble_data", ble_data
           import binascii
@@ -333,23 +313,12 @@ if __name__ == '__main__':
             print "finding matches: ",mac_address
 
           # Verify BLE data length
-          #lost_data = _buffer[pos:]
           if len(ble_data) != (BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len):
-            #lost_data = _buffer[pos - BLE_PREAMBLE_LEN - BLE_ADDR_LEN:pos + BLE_PREAMBLE_LEN + BLE_ADDR_LEN + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len]
-            if is_cmt_tag(mac_address):
-              print "length of the data:", ble_len
-              print "expected length:",(BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len), "data length:",len(ble_data)
-              print "rest of the buffer:", len(_buffer[pos:])
-              print "rejected ble address", mac_address
-              print "Scan type:", ble_pdu_type
-              if not mac_address in rejected_data_map:
-                rejected_data_map[mac_address]=1;
-              else:
-                rejected_data_map[mac_address]+=1;
+            lost_data = _buffer[pos - BLE_PREAMBLE_LEN - BLE_ADDR_LEN:pos + BLE_PREAMBLE_LEN + BLE_ADDR_LEN + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len]
 
-
-            #if original_data
             continue
+
+          ##boundering debugging display of buffer portion
           p_start = pos - BLE_PREAMBLE_LEN - BLE_ADDR_LEN
           p_end = pos+BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len
 
@@ -358,13 +327,12 @@ if __name__ == '__main__':
           # Verify BLE packet checksum
           if opts.disable_crc == False:
             if ble_data[-3:] != crc(ble_data, BLE_PDU_HDR_LEN + ble_len):
-              #print "failing to the verify the BLE packet Checksum"
               if adv_scan_ind:
                 print "rejected ble address2", mac_address
 
               else:
                continue
-          if is_cmt_tag(mac_address):
+          if is_cmt_tag(mac_address,target="2cb84c"):
             print "releasing cmt packet.........", binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
             print "dewhitened.....", mac_address
             if mac_address[-3:] == 'ef41242cb84c':
