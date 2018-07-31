@@ -1,5 +1,6 @@
 import pickle
-from grc.gr_ble import gr_ble as gr_block
+#from grc.gr_ble import gr_ble as gr_block
+from grc.file_transfer_block import file_transfer_block as gr_block
 from proto import *
 
 from datetime import datetime, timedelta
@@ -24,10 +25,10 @@ from threading import Thread
 class SimulatePrm:
 	##constants
 	MIN_BUFFER_LEN=65
-	HOPE_TIME=1
+	HOPE_TIME=15
 
 	def __init__(self):
-		self.filename = "v2_cutoff_prm_sim.csv"
+		self.filename = "file_based_sim7.csv"
 		self.param_time  = 10*60
 		# Initialize Gnu Radio
 		self.gr_block = gr_block()
@@ -46,10 +47,10 @@ class SimulatePrm:
 		# Print capture settings
 		print_settings(self.gr_block, self.opts)
 		self.current_hop = 1
-		self.hopping_time = datetime.now() + timedelta(minutes=self.HOPE_TIME)
+		self.hopping_time = datetime.now() + timedelta(seconds=self.HOPE_TIME)
 
 		# Set initial BLE channel
-		self.current_ble_chan = self.opts.scan_channels[0]
+		self.current_ble_chan = self.opts.scan_channels[1]
 		self.gr_block.set_ble_channel(BLE_CHANS[self.current_ble_chan])
 
 		# Prepare Gnu Radio receive buffers
@@ -70,8 +71,9 @@ class SimulatePrm:
 			##set the new parameters using the simulation utilities
 
 			if datetime.now()>self.hopping_time:
-				self.hopping_time=datetime.now()+timedelta(minutes=	self.HOPE_TIME)
-				print "moving to the next parameter"
+				self.hopping_time=datetime.now()+timedelta(seconds=	self.HOPE_TIME)
+				
+				self.gr_block.blocks_file_source_0.seek(0,0)
 
 				##store the current data
 				model = deepcopy(self.data_model.get_dict())
@@ -83,6 +85,7 @@ class SimulatePrm:
 				self.data_model.set_gr_params(self.gr_block);
 				self.data_model.detected=0
 				self.data_model.processed=0
+				
 
 
 
@@ -96,24 +99,21 @@ class SimulatePrm:
 	def detect_advertisement_packet(self):
 		self.gr_buffer += self.gr_block.message_queue.delete_head().to_string()
 
+
 		if len(self.gr_buffer) > self.opts.min_buffer_size:
-		  
+			
+		  	
 			# Search for BLE_PREAMBLE in received data
-			if self.lst_buffer=='':
-				self.lst_buffer=self.gr_buffer;
-				return
+			
 			_buffer = ''.join(str(x) for x in self.lst_buffer) + self.gr_buffer
+			self.lst_buffer=self.gr_buffer[-7:]
+			self.gr_buffer=''
 			#print "buffer length:",len(_buffer)
-			conv = Convolution(self.search_term,_buffer);
+			conv = Convolution(self.search_term,_buffer,[]);
 			conv.convolve()
 
-			self.lst_buffer=''
-			self.lst_buffer=self.gr_buffer;
-			self.gr_buffer=''
-			if conv.info():
-				self.data_model.detected+=1
-		  
-
+			if conv.sim_info():
+				self.data_model.detected+=conv.num_elm
 		 
 
 
@@ -166,6 +166,7 @@ class SaveData(Thread):
 		self.data = deepcopy(data);
 		self.filename = filename;
 	def run(self):
+		
 
 		df = pd.DataFrame(self.data)
 		df.to_csv(self.filename)

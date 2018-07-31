@@ -10,48 +10,90 @@
 #  (at your option) any later version.
 #
 '''
-aad6be898ed4e0 ab 61 7d f2 59 c3 19 a4 ab5984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca768f3dd
-0225ef41242cb84c0201041bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5f8bb534
 
-aad6be898ed4e1 ab 61 7d f2 59 c3 19 a4 ab588402cd62fe55c151b508b4880378ab3c2f475f3ce7153da7d7b24ca02f
+
+aad6be898e d4e1 ab 61 7d f259c319a4ab 588402cd62fe55c151b508b4880378 ab3c2f475f3ce7153da7d7b2 4ca02f
 0224ef41242cb84c0201041aff4c00021537e3c199e7444f8eaafc9d12e0398c92242cef41c5b44369
 
-aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
+aad6be898e d6e1 ab 61 7d f259c319a4a9 588402cd62fe571c85f1dac587fb4d de84eb85171de0153da7d7b2 e91cbd
 0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed6e0 ab 61 7d f2 59 c3 19 a4 a95984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca734bc45
+
+aad6be898e d6 e1 ab 61 7d f2 59 c3 19 a4 a9 588402cd62fe55c151b508b4880378 ab3c2f475f3ce7153da7d7b2 bfbc39
+0024ef41242cb84c0201061aff4c00021537e3c199e7444f8eaafc9d12e0398c92242cef41c5475f7f
+
+#PARKED BEACON
+aad6be898e d6e1ab 617d f259c319a4a9 588402cd62fe55c152b508b4880378 ab3c2f475f3ce7153da7d7b2 0c2188
+0024ef41242cb84c0201061aff4c00021537e3c299e7444f8eaafc9d12e0398c92242cef41c5f4c2ce
+
+
+
+
+aad6be898e d4e0ab 617d f259c319a4ab 5984b1228cab177303314b9c068c6c cba3ec86780d50b9921557dca7 68f3dd
+0225ef41242cb84c0201041bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5f8bb534
+
+aad6be898e d6e0ab 617d f259c319a4a9 5984b1228cab177303314b9c068c6c cba3ec86780d50b9921557dca7 34bc45
 0025ef41242cb84c0201061bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5fd7faac
 
-aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
-0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed6e1 ab 61 7d f2 59 c3 19 a4 a9588402cd62fe571c85f1dac587fb4dde84eb85171de0153da7d7b2e91cbd
-0024ef41242cb84c0201061aff4c000215353e15dd353540769f8925d62271ad95242cef41c511fffb
 
-aad6be898ed4e0 ab 61 7d f2 59 c3 19 a4 ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875
+aad6be898e d4 e0 ab 617d f259c319a4ab 5984b1d373803183ab10953e489039 dd3b36236a29f0b0c6f8ba00b9 b1d875
 0225ef41242cb84c0201041bffff1e136b53a13b3c7ace8f1deb8a9a0b840c998581d7b02c7741529e9c
 
+#NOT MOVING BEACON
+           d4e0ab 617d f259c319a4ab 5984b1d373803183ab10953e489039 dd3b36236a29f0b0c6f8ba00b9
+           d6e0ab 617d f259c319a4a9 5984b1d373803183ab10953e489039 dd3b36236a29f0b0c6f8ba00b9
+aad6be898e d6e0ab 617d f259c319a4a9 5984b1d373803183ab10953e489039 dd3b36236a29f0b0c6f8ba00b9 ed97ed
+0025ef41242cb84c0201061bffff1e136b53a13b3c7ace8f1deb8a9a0b840c998581d7b02c77410ed104
 
-aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
-aad6be898e 95 c9 e1 77 48 51 36 ca f4 e4 8b 6e c3 02 2cfa46
-aad6be898e 95 c9 e1 77 48 51 36 ca f4 e4 8b6ec3022cfa46
-aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
-aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
-aad6be898e 95 c9 1e 67 8c 17 ea e9 f4 e4 8b6ec302f7a52b
-aad6be898e 95 c9 1e 67 8c 17 ea e9 f4 e4 8b6ec302f7a52b
 
-aad6be898e 95 c9 d1 76 dc 54 32 d4 f4 e4 8b6ec3026606ba
-aad6be898e 95 c9 d1 76 dc 54 32 d4 f4 e4 8b6ec3026606ba
-aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
-aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
-aad6be898e 95 c9 6e a5 9f 0a d5 d0 f4 e4 8b6ec30265c41c
-aad6be898e 95 c9 6e a5 9f 0a d5 d0 f4 e4 8b6ec30265c41c
-aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
-aad6be898e 95 c9 13 01 9f a7 2a fd f4 e4 8b6ec3025a4c9e
-aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
-aad6be898e d2 c3 ab 61 7d f2 59 c3 ef fb f6
+
+
+
+
+aad6be898e 95c95fc641f5caf1f4e48b6ec302 55 c9 21
+430c1be6182b2b7eef41242cb84c98a9ca
+
+aad6be898e d2c3 ab617df259c3 ef fb f6
+0406ef41242cb84cf45e59
+
+aad6be898e 95c9c41e8b8786e9f4e48b6ec302 d1 ac dd
+430c803ed2596766ef41242cb84c1ccc36
+
+aad6be898e 95c9d588da7ae1d4f4e48b6ec302 e7 cd b6
+430c91a883a4005bef41242cb84c2aad5d
+
+aad6be898e 95c972c05c9347d5f4e48b6ec302 ea db 40
+430c36e0054da65aef41242cb84c27bbab
+
+aad6be898e 95c96e238d60a8f5f4e48b6ec302  69 84 1e
+430c2a03d4be497aef41242cb84ca4e4f5
+
+aad6be898e 95c91b146c61bbc2f4e48b6ec302 66 12 64
+430c5f3435bf5a4def41242cb84cab728f
+
+aad6be898e 95c93223856a54eaf4e48b6ec302 23 66 a2
+430c7603dcb4b565ef41242cb84cee0649,
+
+aad6be898ed5c9575183a3fb8ff4e48b6ec302 8b b2 5b
+030c1371da7d1a00ef41242cb84c46d2b0
+
+
+
+
+####packets 
+
+4,0224ef41242cb84c0201041aff4c00021537e3c199e7444f8eaafc9d12e0398c92242cef41c5b44369,aad6be898ed4e1ab617df259c319a4ab588402cd62fe55c151b508b4880378ab3c2f475f3ce7153da7d7b24ca02f
+
+5,0225ef41242cb84c0201041bffff1e136b53a13b3c7ace8f1deb8a9a0b840c998581d7b02c7741529e9c,aad6be898ed4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9b1d875
+
+43,0225ef41242cb84c0201041bffffefec407551931da46cc101be9c02d1211ebd2588835dc1ab5f8bb534,aad6be898ed4e0ab617df259c319a4ab5984b1228cab177303314b9c068c6ccba3ec86780d50b9921557dca768f3dd
+
+
 '''
+
 import pickle
+#from grc.gr_ble_file import gr_ble_file as gr_block
 from grc.gr_ble import gr_ble as gr_block
 from optparse import OptionParser, OptionGroup
 from gnuradio.eng_option import eng_option
@@ -124,7 +166,7 @@ def init_opts(gr):
   # Capture
   capture = OptionGroup(parser, 'Capture settings')
   capture.add_option("-o", "--pcap_file", type="string", default='', help="PCAP output file or named pipe (FIFO)")
-  capture.add_option("-m", "--min_buffer_size", type="int", default=85, help="Minimum buffer size [default=%default]")
+  capture.add_option("-m", "--min_buffer_size", type="int", default=65, help="Minimum buffer size [default=%default]")
   capture.add_option("-s", "--sample-rate", type="eng_float", default=gr.sample_rate, help="Sample rate [default=%default]")
   capture.add_option("-t", "--squelch_threshold", type="eng_float", default=gr.squelch_threshold, help="Squelch threshold (simple squelch) [default=%default]")
 
@@ -162,11 +204,7 @@ def init_opts(gr):
 # SrchKey("aad6be898e95c925ce863719e3f4e48b6ec302",4,168,12),SrchKey("aad6be898e95c9182f0c622bc5f4e48b6ec302",4,168,12),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey(),SrchKey()]
 if __name__ == '__main__':
   MIN_BUFFER_LEN = 4*65
-  ###The main data map
-  data_map = DataMap()
-  ###saving the data to a file
-  ble_packets = []
-
+  
   # Initialize Gnu Radio
   gr_block = gr_block()
   gr_block.start()
@@ -181,8 +219,7 @@ if __name__ == '__main__':
   # Verify BLE channels argument
   if ',' not in opts.current_ble_channels:
     opts.current_ble_channels += ','
-  detected_addr = []
-
+  
   # Prepare BLE channels argument
   opts.scan_channels = [int(x) for x in opts.current_ble_channels.split(',')]
 
@@ -199,7 +236,7 @@ if __name__ == '__main__':
   hopping_time = datetime.now() + timedelta(seconds=opts.ble_scan_window)
 
   # Set initial BLE channel
-  current_ble_chan = opts.scan_channels[0]
+  current_ble_chan = opts.scan_channels[1]
   gr_block.set_ble_channel(BLE_CHANS[current_ble_chan])
 
   # Prepare Gnu Radio receive buffers
@@ -207,56 +244,51 @@ if __name__ == '__main__':
   lost_data = ''
   lst_buffer = ''
 
-
-  ##rejected data map
-  rejected_data_map={}
+  #REMOVE ME THE PACKETS ARE SELECTED
+  selection_map = []
+  count=0
+  adver_count = 0
+  random_count = 0
 
   print 'Capturing on BLE channel [ {:d} ] @ {:d} MHz'.format(current_ble_chan, int(gr_block.get_freq() / 1000000))
 
   try:
-    current_ble_chan = opts.scan_channels[current_hop%len(opts.scan_channels)]
-    gr_block.set_ble_channel(BLE_CHANS[current_ble_chan])
-    print 'Listening to BLE channel [ {:d} ] @ {:d} MHz'.format(current_ble_chan, int(gr_block.get_freq() / 1000000))
+    
     while True:
-      # Move to the next BLE scanning channel
-
-      # if datetime.now() >= hopping_time:
-      #   current_ble_chan = opts.scan_channels[current_hop % len(opts.scan_channels)]
-      #   gr_block.set_ble_channel(BLE_CHANS[current_ble_chan])
-      #   hopping_time = datetime.now() + timedelta(seconds=opts.ble_scan_window)
-      #   current_hop +=1
-      #   print 'Switching to BLE channel [ {:d} ] @ {:d} MHz'.format(current_ble_chan, int(gr_block.get_freq() / 1000000))
 
       # Fetch data from Gnu Radio message queue
       gr_buffer += gr_block.message_queue.delete_head().to_string()
+      #print "buffer size:", len(gr_buffer)
 
       if len(gr_buffer) > opts.min_buffer_size:
         # Prepend lost data
         _buffer= ''.join(str(x) for x in lost_data) + gr_buffer
-        lost_data = gr_buffer[-20:];
-
+        lost_data = gr_buffer[-15:];
+        gr_buffer=''
+        # random_count+=1
+        # if random_count==12:
+        #   random_count+=-8000
+        #   print binascii.hexlify(bytearray([ord(d) for d in _buffer]))
 
 
 
         
-        
-        
-        search_term = '0xaad6be898e'#'0xab617df259c319a4'##'0x8E89BED6'#"0x71764129"#"0x81D7B02C7741"#'0x558E89BED6'
-      
+        search_term = "0xaad6be898e95c9b2647e33cce2f4e48b6ec302"
+
+        #####searching for specific tag packets 
+        # _exp_ = Expanded(_buffer);
+        # _exp_.__map__();
 
        
-        conv = Convolution(search_term,_buffer,detected_addr);
+        # conv = Convolution(search_term,_buffer);
 
-        ##test
-        conv.convolve();
-        conv.info()
+
+        # # # ##test
+        # conv.convolve(structured=True);
+        # conv.info()
         #continue
-        
-
 
         
-
-       
 
         # Search for BLE_PREAMBLE in received data
         for pos in [position for position, byte, in enumerate(_buffer) if byte == BLE_PREAMBLE]:
@@ -282,6 +314,10 @@ if __name__ == '__main__':
           
           #check for advertisement access addr
           if ble_access_address == BLE_ACCESS_ADDR:
+            adver_count+=1
+            if adver_count%13==0:
+              print "found",adver_count,"advertisement packets"
+
             ble_len = ble_header[1] & 0x3f
           else:
             continue
@@ -292,10 +328,11 @@ if __name__ == '__main__':
           ble_pdu_type = ble_header[0] & 0x0f
 
           if ble_pdu_type not in BLE_PDU_TYPE.values():
+            #print "unrecognized header"
             continue
 
           # Extract BLE Length
-          ble_len = ble_header[1] & 0x1f
+          ble_len = ble_header[1] & 0x3f
 
 
           # Dewhitening BLE packet
@@ -306,15 +343,15 @@ if __name__ == '__main__':
 
           
           
-          #print "ble_data", ble_data
+          
           import binascii
           mac_address = binascii.hexlify(bytearray(ble_data))
-          if "2c7741"==mac_address[0:6]:
-            print "finding matches: ",mac_address
+
 
           # Verify BLE data length
           if len(ble_data) != (BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len):
-            lost_data = _buffer[pos - BLE_PREAMBLE_LEN - BLE_ADDR_LEN:pos + BLE_PREAMBLE_LEN + BLE_ADDR_LEN + BLE_PDU_HDR_LEN + BLE_CRC_LEN + ble_len]
+            lost_data = _buffer[-60:];
+            # print "too short:", mac_address
 
             continue
 
@@ -327,43 +364,27 @@ if __name__ == '__main__':
           # Verify BLE packet checksum
           if opts.disable_crc == False:
             if ble_data[-3:] != crc(ble_data, BLE_PDU_HDR_LEN + ble_len):
-              if adv_scan_ind:
-                print "rejected ble address2", mac_address
+              continue
 
-              else:
-               continue
-          if is_cmt_tag(mac_address,target="2cb84c"):
-            print "releasing cmt packet.........", binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
-            print "dewhitened.....", mac_address
-            if mac_address[-3:] == 'ef41242cb84c':
-              print "buffer:", [ord(d) for d in _buffer]
-          else:
-            ##
-            #_packet_ = {"raw":binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]])),"packet":mac_address}
-            # print "raw:",binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
-            # print "packet:", mac_address
-            #ble_packets.append(_packet_);
-            #thread = SaveBlenPackets(ble_packets);
-            #thread.start()
-
+          ##Verify CMT packet
+          if is_cmt_tag(mac_address,target="ef41242cb84c"):
+            #selection_map.append({"dewhitened":mac_address,"raw":binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))});
+            #pd.DataFrame(selection_map).to_csv("picked_cmt_packets_2.csv")
+            count+=1
+            print"raw:",binascii.hexlify(bytearray([ord(d) for d in _buffer[p_start:p_end]]))
+            print "found cmt packet:", mac_address, "number of cmt packets:",count,"number of advertisement packets:", adver_count
+            #print mac_address
+            if count%9==0:
+              print "received cmt packet:", count
             continue
-          # print "writing data"
-          print "length of the buffer", len(_buffer)
+          else:
+            continue
           # Write BLE packet to PCAP file descriptor
           write_pcap(pcap_fd, current_ble_chan, ble_access_address, ble_data)
-          # for i in range(int(10e6)):
-          #   8+9;
-
-        #gr_buffer = ''
 
   except KeyboardInterrupt:
     pass
-###data
-print "data packets"
-pd.DataFrame(detected_addr).to_csv("picked_packets.csv")
 
-
-pd.DataFrame([rejected_data_map]).to_csv("rejected_data1.csv")
 pcap_fd.close()
 gr_block.stop()
 gr_block.wait()

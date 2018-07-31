@@ -11,11 +11,12 @@ def compute_hamnming_distance(data,target="2cb84c", thresh=2):
 	start = 0
 	end = len(target)
 	n = len(data);
+	length = len(target)*4
 	while end<=n:
 		binary1 = bin(int(target,16)^int(data[start:end],16))
 		
-		binary = binary1.count('0')
-		if binary>=len(target)*4-thresh or binary1=='0b0':
+		binary = length-binary1.count('1')
+		if binary>=len(target)*4-thresh:
 			print "mac_address:",data
 			__map__.append(data)
 		start+=1

@@ -42,13 +42,14 @@ class ComparisonData:
     self.squelch_threshold = GR_Parameter(-100,20,-150,-30)
     self.sensivity = GR_Parameter(1.0,0.1,0.7,1.0)
     self.rf_gain = GR_Parameter(60,10,30,70)
-    self.gfsk_omega_limit = GR_Parameter(0.035,.01,.015,.205)
-    self.gfsk_mu = 0.5
-    self.gfsk_gain_mu = GR_Parameter(0.3,0.1, 0.1,1.0)
-    self.cutoff_freq = GR_Parameter(800,100, 600,1000)
+    self.gfsk_omega_limit = GR_Parameter(0.035,.01,.030,.505)
+    self.transition_width = GR_Parameter(300,50,150,600)
+    self.gfsk_gain_mu = GR_Parameter(0.3,0.01, 0.01,1.40)
+    self.cutoff_freq = GR_Parameter(600,0, 600,600)
+    self.freq_offset = GR_Parameter(5000,100, -1000,3000)
 
     #Preparing the tuning parameters 
-    self.vars = [self.sensivity,self.gfsk_omega_limit,self.gfsk_gain_mu,self.cutoff_freq]
+    self.vars = [self.transition_width,self.gfsk_omega_limit,self.gfsk_gain_mu,self.cutoff_freq, self.freq_offset]
     self.values = [self.get_all_values(var) for var in self.vars]
     self.states = list(itertools.product(*self.values))
     rnd.shuffle(self.states)
@@ -112,7 +113,9 @@ class ComparisonData:
     gr.set_gfsk_omega_limit(self.gfsk_gain_mu.value)
     gr.set_rf_gain(self.rf_gain.value)
     gr.set_sensivity(self.sensivity.value)
+    gr.set_transition_width(self.transition_width.value*1000)
     gr.set_cutoff_freq(self.cutoff_freq.value*1000)
+    gr.set_freq_offset(self.freq_offset.value)
   def get_dict(self):
     """
     generate a quick dictionary of the current parameter name to current value for csv storage
@@ -121,8 +124,9 @@ class ComparisonData:
     "processed":self.processed,
     "detected": self.detected,
     #"sqlch_thrsh": self.squelch_threshold.value,#(self.squelch_threshold.default,self.squelch_threshold.value,self.squelch_threshold.min,self.squelch_threshold.max),
-    "sensivity'": self.sensivity.value,#(self.sensivity.default,self.sensivity.value,self.sensivity.min,self.sensivity.max),
+    "transition_width": self.transition_width.value,#(self.sensivity.default,self.sensivity.value,self.sensivity.min,self.sensivity.max),
     #"rf_gain": self.rf_gain.value,#(self.rf_gain.default,self.rf_gain.value,self.rf_gain.min,self.rf_gain.max),
+    "freq_offset": self.freq_offset.value,
     "gfsk_omega_limit": self.gfsk_omega_limit.value,#(self.gfsk_omega_limit.default,self.gfsk_omega_limit.value,self.gfsk_omega_limit.min,self.gfsk_omega_limit.max),
     "gfsk_gain_mu": self.gfsk_gain_mu.value,#(self.gfsk_gain_mu.default,self.gfsk_gain_mu.value,self.gfsk_gain_mu.min,self.gfsk_gain_mu.max),
     "cutoff_freq":self.cutoff_freq.value
@@ -148,7 +152,7 @@ def init_opts(gr):
   # Capture
   capture = OptionGroup(parser, 'Capture settings')
   capture.add_option("-o", "--pcap_file", type="string", default='', help="PCAP output file or named pipe (FIFO)")
-  capture.add_option("-m", "--min_buffer_size", type="int", default=65, help="Minimum buffer size [default=%default]")
+  capture.add_option("-m", "--min_buffer_size", type="int", default=165, help="Minimum buffer size [default=%default]")
   capture.add_option("-s", "--sample-rate", type="eng_float", default=gr.sample_rate, help="Sample rate [default=%default]")
   capture.add_option("-t", "--squelch_threshold", type="eng_float", default=gr.squelch_threshold, help="Squelch threshold (simple squelch) [default=%default]")
 
