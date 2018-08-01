@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Wed Jul 25 09:31:18 2018
+# Generated: Wed Aug  1 14:45:27 2018
 ##################################################
 
 from gnuradio import analog
@@ -70,7 +70,7 @@ class gr_ble2(gr.top_block):
         	verbose=False,
         	log=False,
         )
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, '/Users/mmohamoud/software_defined_radios/data_files/demoded_data', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demoded_data_lewis_test', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_threshold, .1, 0, True)

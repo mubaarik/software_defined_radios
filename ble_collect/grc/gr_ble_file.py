@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Wed Jul 25 11:38:08 2018
+# Generated: Wed Aug  1 15:31:34 2018
 ##################################################
 
 from gnuradio import blocks
@@ -45,16 +45,17 @@ class gr_ble_file(gr.top_block):
         ##################################################
         # Message Queues
         ##################################################
-        self.message_queue = message_queue = gr.msg_queue(2)
+        blocks_message_sink_0_msgq_out = virtual_sink_0_msgq_in = gr.msg_queue(2)
 
         ##################################################
         # Blocks
         ##################################################
+        self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1, 1024)
         self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, 40000,True)
-        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, 2e5,True)
+        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, blocks_message_sink_0_msgq_out, True)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '/Users/mmohamoud/software_defined_radios/data_files/demoded_data', False)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demoded_data_lewis_test', True)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
@@ -66,6 +67,7 @@ class gr_ble_file(gr.top_block):
         self.connect((self.blocks_float_to_char_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.blocks_float_to_char_0, 0))
         self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_message_sink_0, 0))
+        self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_vector_sink_x_0, 0))
 
     def get_transition_width(self):
         return self.transition_width

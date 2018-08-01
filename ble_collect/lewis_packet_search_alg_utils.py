@@ -1,6 +1,6 @@
 from optparse import OptionParser, OptionGroup
 from gnuradio.eng_option import eng_option
-
+from bitstring import BitArray
 
 ############
 ############
@@ -13,14 +13,18 @@ constants
 ####ERROR constants 
 PAYLOAD_ERROR_LIMIT = 21
 
+####
+PROB_THRESHOLD = .7
+COUNT_THRESH = 3
+
 #pre-amble and access code data
-PREA_AND_ADDR = [PREA_AND_ADDR_STR[st:st+2] for st in range(len(PREA_AND_ADDR_STR)) if st%2==0]
-PREA_AND_ADDR_LEN = len(PREA_AND_ADDR);
+# PREA_AND_ADDR = [PREA_AND_ADDR_STR[st:st+2] for st in range(len(PREA_AND_ADDR_STR)) if st%2==0]
+# PREA_AND_ADDR_LEN = len(PREA_AND_ADDR);
 
 # packet of interest
-PACKET_BODY_STR="d4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"
+PACKET_BODY_STR="d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"
 PACKET_BODY = [PACKET_BODY_STR[st:st+2] for st in range(len(PACKET_BODY_STR)) if st%2==0]
-PACKET_BUFFER = BitArray(hex = PACKET_BODY_STR)
+PACKET_BUFFER = BitArray(hex = PACKET_BODY_STR).bin
 #PARKED_PACKET
 PACKET_BODY_LEN = len(PACKET_BODY);
 

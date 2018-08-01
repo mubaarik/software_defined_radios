@@ -1,4 +1,4 @@
-from grc.gr_ble import gr_ble as gr_block
+from grc.gr_ble_file import gr_ble_file as gr_block
 
 from datetime import datetime, timedelta
 from proto import *
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     while True:
 
       # Fetch data from Gnu Radio message queue
-      gr_buffer += gr_block.message_queue.delete_head().to_string()
+      gr_buffer += ''#gr_block.message_queue.delete_head().to_string()
       #print len(gr_block.blocks_vector_sink_x_0.data())
       hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data())
       gr_block.blocks_vector_sink_x_0.reset()
@@ -83,7 +83,8 @@ if __name__ == '__main__':
         #hex_buffer = [binascii.hexlify(d) for d in _buffer]
 
 
-        for pos ,byte, in enumerate(_buffer):
+        for pos ,byte, in enumerate(hex_buffer):
+          
 
           #check for enough data
           if len(hex_buffer[pos:BLE_PREAMBLE_LEN+BLE_ADDR_LEN+pos])<(BLE_PREAMBLE_LEN+BLE_ADDR_LEN):
@@ -102,12 +103,13 @@ if __name__ == '__main__':
           #check for acceptable adversitement header
           if pre_dist>PRE_ERROR_LIMIT:
             continue
-          
+
+          print "found preamble"
           
 
           ##debuging
           count+=1
-          if count%997==0:
+          if count%7==0:
             print "advertisement found:",pre_add,"count:",count
 
           ##increase the search position
@@ -115,8 +117,8 @@ if __name__ == '__main__':
 
           ##packet body
           packet_body  = hex_buffer[pos:pos+PACKET_BODY_LEN];
-          # if len(packet_body)>4 and (packet_body[3] == '61' and packet_body[4]== "7d"):
-          #   print "packet:",packet_body
+          if len(packet_body)>4 and (packet_body[3] == '61' and packet_body[4]== "7d"):
+            print "packet:",packet_body
 
           ##check for enough data in the packet
           if len(packet_body)<PACKET_BODY_LEN:

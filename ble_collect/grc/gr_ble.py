@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Mon Jul 30 14:38:09 2018
+# Generated: Wed Aug  1 14:39:37 2018
 ##################################################
 
 from gnuradio import analog
@@ -49,7 +49,7 @@ class gr_ble(gr.top_block):
         ##################################################
         # Message Queues
         ##################################################
-        self.message_queue = message_queue = gr.msg_queue(2)
+        self.message_queue = self.message_queue = gr.msg_queue(2)
 
         ##################################################
         # Blocks
@@ -64,7 +64,7 @@ class gr_ble(gr.top_block):
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(rf_gain, 0)
-        self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), 0, sample_rate)
         self.digital_gfsk_demod_0 = digital.gfsk_demod(
         	samples_per_symbol=gfsk_sps,

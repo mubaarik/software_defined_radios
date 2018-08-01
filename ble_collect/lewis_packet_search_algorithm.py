@@ -1,11 +1,12 @@
-from grc.gr_ble import gr_ble as gr_block
+from grc.gr_ble_file import gr_ble_file as gr_block
 
 from datetime import datetime, timedelta
 from proto import *
 
 from copy import deepcopy
-from packet_search_utils import *
-def error_poses(byte_1, byte_2,i):
+from lewis_packet_search_alg_utils import *
+from bitstring import BitArray
+
 
 if __name__ == '__main__':
   # Initialize Gnu Radio
@@ -62,9 +63,7 @@ if __name__ == '__main__':
 
       if len(hex_data) > opts.min_buffer_size:
         # Prepend lost data
-        _buffer=  gr_buffer
         
-        gr_buffer=''
         hex_buffer = lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
         lost_data = hex_buffer[-15:];
         hex_data = ()
@@ -73,7 +72,7 @@ if __name__ == '__main__':
         
 
 
-        for pos ,byte, in enumerate(_buffer):
+        for pos ,byte, in enumerate(hex_buffer):
 
           ##packet body
           packet_body  = hex_buffer[pos:pos+PACKET_BODY_LEN];
@@ -83,26 +82,28 @@ if __name__ == '__main__':
           if len(hex_buffer[pos:])<PACKET_BODY_LEN:
             lost_data = hex_buffer[pos:]
             break
-          data_str = BitArray(hex = packet_body);
+          packet_body_str = ("").join(packet_body)
+          data_str = BitArray(hex = packet_body_str);
 
-          error_poses  = [i for i in range(len(data_str)) if (data_str.bin[i]!=PACKET_BUFFER.bin[i])];
+          error_poses  = [i for i in range(len(data_str)) if (data_str.bin[i]!=PACKET_BUFFER[i])];
 
-          islands = [error_poses[i-1] -error_poses[i]  for i in range(len(error_poses)) if i>0]
-
-
+          islands = [error_poses[i] -error_poses[i-1]  for i in range(len(error_poses)) if i>0];
           
 
-          ##check for enough data in the packet
-          if len(packet_body)<PACKET_BODY_LEN:
-            lost_data = hex_buffer[pos-(BLE_PREAMBLE_LEN+BLE_ADDR_LEN):]
-            break
+          ####compute the probability per island 
+          island_probs = [(.5)**island for island in islands if island>COUNT_THRESH*8]
+          if island_probs:
+          	print max(islands)
+          prob_luck = 1.0
+          for island in island_probs:
+          	prob_luck*=island
 
-          
+          ###
 
-          packet_dist = sum([CHAR_DISTS[(packet_body[i][0],PACKET_BODY[i][0])]+CHAR_DISTS[(packet_body[i][1],PACKET_BODY[i][1])] for i in range(PACKET_BODY_LEN)])
+          if prob_luck<PROB_THRESHOLD:
+          	print "packet:",("").join(packet_body),"errors:",prob_luck
 
-          if packet_dist<PAYLOAD_ERROR_LIMIT:
-            print "packet:",("").join(packet_body),"errors:",packet_dist
+
   except KeyboardInterrupt:
     pass
 gr_block.stop()
