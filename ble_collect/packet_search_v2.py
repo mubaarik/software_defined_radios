@@ -14,30 +14,16 @@ def compute_prob(packet_body):
 
 
   ###generate the islands
-  pos_error_poses  = [i for i in range(L) if packet_body.bin[i]!=PACKET_ARRAY.bin[i]];
-  neg_error_poses = [i for i in range(L) if packet_body.bin[i]==PACKET_ARRAY.bin[i]];
+  pos_error_poses  = [i for i in range(L) if packet_body.bin[i]!=PACKET_ARRAY.bin[i] or i==0 or i==L-1];
+  neg_error_poses = [i for i in range(L) if packet_body.bin[i]==PACKET_ARRAY.bin[i] or i==0 or i==L-1];
 
-
-  if not 0 in pos_error_poses:
-    pos_error_poses=[0]+pos_error_poses
-  if not L-1 in pos_error_poses:
-    pos_error_poses.append(L-1)
-  if not 0 in neg_error_poses:
-    neg_error_poses=[0]+neg_error_poses
-  if not L-1 in neg_error_poses:
-    neg_error_poses.append(L-1)
 
   pos_islands = [pos_error_poses[i] -pos_error_poses[i-1]  for i in range(len(pos_error_poses)) if i>0 and pos_error_poses[i] -pos_error_poses[i-1]>1];
   neg_islands = [neg_error_poses[i] -neg_error_poses[i-1]  for i in range(len(neg_error_poses)) if i>0 and neg_error_poses[i] -neg_error_poses[i-1]>1];
 
   ###apply the objective function
   prob = (LF-(len(pos_islands)+len(neg_islands)))/LF;
-  # if prob>.635:
-  #   print ""
-  #   print "pos_islands:",pos_islands
-  #   print "neg_islands:", neg_islands
-  #   print "prob:",prob
-  #   print ""
+
   return prob
 
 
