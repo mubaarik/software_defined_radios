@@ -1,4 +1,4 @@
-from grc.gr_ble_file import gr_ble_file as gr_block
+from grc.gr_ble import gr_ble as gr_block
 
 from datetime import datetime, timedelta
 from proto import *
@@ -57,10 +57,6 @@ if __name__ == '__main__':
   try:
     
     while True:
-
-      # Fetch data from Gnu Radio message queue
-      gr_buffer += ''#gr_block.message_queue.delete_head().to_string()
-      #print len(gr_block.blocks_vector_sink_x_0.data())
       hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data())
       gr_block.blocks_vector_sink_x_0.reset()
 
@@ -68,10 +64,6 @@ if __name__ == '__main__':
 
       if len(hex_data) > opts.min_buffer_size:
         # Prepend lost data
-        #print len(gr_buffer)
-        _buffer=  gr_buffer
-        
-        gr_buffer=''
         hex_buffer = lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
         lost_data = hex_buffer[-15:];
         hex_data = ()
