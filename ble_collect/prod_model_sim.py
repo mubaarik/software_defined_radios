@@ -1,101 +1,6 @@
 
-
-from bitstring import BitArray
-import random
-import pandas as pd
-import numpy as np 
-import matplotlib.pyplot as plt
-
-TARGET = "d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"
-
-SAMPLE = "cd62fe55c151b508b4880378ab3c2f475f3ce7153da7d7b24c"
-THRESHHOLD = 8
-LF = len(TARGET)*4.0
-L = len(TARGET)*4
-
-ITERATIONS = 1000;
-
-BASE = 1.2
-
-TARGET_ARR = BitArray(hex=TARGET);
-SAMPLE_ARR = BitArray(hex = TARGET);
-
-for i in range(L):
-	if i%2==0:
-		SAMPLE_ARR.invert(i);
-
-FILENAME = 'simulations.cvs';
-
-D_FRAME = []
-
+from util_functions import *
 __MAP__ = []
-
-def drop_islands(sample_arr,percent,island_size=3, divisions=(1,3,5)):
-	lines = []
-	last = 0
-	for ind,div in enumerate(divisions):
-		l=(L/sum(divisions))*divisions[ind];
-		
-		lines.append((last,last+l))
-		last+=l
-		else:
-			lines.append((lines[ind],))
-
-	l1 = (L/sum(divisions))*divisions[0];
-	l2 = (L/sum(divisions))*divisions[1];
-	l3=(L/sum(divisions))*divisions[3];
-
-
-def drop_uniform_errors(sample_arr, percent):
-	ranges = range(L);
-	i=0
-	while i<=int(L*percent):
-		i+=1
-		ch = random.choice(ranges)
-		ranges.remove(ch)
-		sample_arr.invert(ch);
-	return sample_arr
-
-def obj_total(islands):
-	return sum([(n/LF)**2*(n<THRESHHOLD)+((n+1)/LF)*(n<=THRESHHOLD) for n in islands])
-
-def obj_power_count(islands,offset=3):
-	prob = 1.0
-
-	for island in islands:
-		prob*=max(island-offset,1.0);
-
-	return 1.0 - 1.0/prob
-def obj_exponent(pos_islands,neg_islands,offset=1):
-	p_prob = 1.0
-	n_prob = 1.0
-
-	for island in pos_islands:
-		p_prob*=(BASE)**max(island-offset,0);
-	for island in neg_islands:
-		n_prob*=(BASE)**max(island-offset,0);
-
-	#print "prob:", prob
-	return 1.0 - min(1,n_prob/p_prob)
-
-
-def run_based_model(pos_islands,neg_islands):
-	islands = 0.0
-	print len(pos_islands),len(neg_islands)
-	for islnd in pos_islands:
-		if islnd>1:
-			islands+=1.0;
-	for island in neg_islands:
-		if island>1:
-			islands+=1.0;
-	print islands
-	print (LF-islands)/LF
-	return (LF-islands)/LF;
-
-
-
-def percent_mutations(percent=0.20):
-	pass
 
 
 def random_mutation():
@@ -156,13 +61,14 @@ def simulate(objective_function):
 		return
 	data_frame = pd.DataFrame(D_FRAME);
 	data_frame.to_csv(FILENAME);
-def bit_error_rate(objective_function):
-	percent_list = [i*.1 for i in range(1,6)]
+def bit_error_rate(objective_function,error_funct,divisions = (1,3,5)):
+	percent_list = [i*.1 for i in range(1,6)[::-1]]
 
 	for percent in percent_list:
+		print "simulating the "+str(int(percent*100))+"%"
 		prob = []
 		for i in range(ITERATIONS):
-			SAMPLE_ARR = drop_errors(BitArray(hex = TARGET),percent);
+			SAMPLE_ARR = error_funct(BitArray(hex = TARGET),percent,divisions=divisions);
 			pos_error_poses  = [i for i in range(L) if SAMPLE_ARR.bin[i]!=TARGET_ARR.bin[i]];
 			neg_error_poses = [i for i in range(L) if SAMPLE_ARR.bin[i]==TARGET_ARR.bin[i] ]
 			
@@ -191,37 +97,57 @@ def bit_error_rate(objective_function):
 
 
 
+
+
+
 def plot_data_frame(x,y):
 	fig = plt.figure(figsize=(30,5))
 	ax = fig.add_subplot(111)
+
 	print "x:",x[0:40],"length:",len(x)
 	print "y:",y[0:40],"length:",len(x)
 	
 	ax.plot(x,y);
 	plt.show()
-def multi_plot(Y):
+def multi_plot(Y,file_name = "filename"):
 	fig = plt.figure(figsize=(30,5))
 	ax = fig.add_subplot(111)
+
+	ax.clear()
 	for y in Y:
 		label = str(int(y[0]*100))+"%"
 		x = range(len(y[1]));
 		y = y[1];
 		
-		ax.plot(y,x,label=label)
+		plt.plot(y,x,label=label)
+	#print ax.lines
 	plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-	plt.show()
+	#plt.show()
+	fig.savefig(file_name)
+	fig.show('all')
+	fig.clear()
+	ax.clear()
+	plt.clf()
+
+	
+	plt.close(fig)
 #multi_plot([(0.5,[12,23,4,4,5,23,23,4,4,2,2]),(0.4,[12,3,5,6,5,3,3,4,4,2,2])])
 
 
 
 if __name__=="__main__":
-	bit_error_rate(run_based_model);
-	# print "exiting"
-	# x = [d[0] for d in __MAP__]
-	# y = [d[1] for d in __MAP__]
+	INTEREST_MAP = ERR_PERCENTS
+	for div in INTEREST_MAP:
+		bit_error_rate(run_based_model,varying_err_rate, divisions=INTEREST_MAP[div]);
+		# print "exiting"
+		# x = [d[0] for d in __MAP__]
+		# y = [d[1] for d in __MAP__]
 
-	#plot_data_frame(x,y)
-	multi_plot(__MAP__);
+		#plot_data_frame(x,y)
+		multi_plot(__MAP__,file_name=PATH+div);
+		__MAP__ = []
+
+
 
 
 
