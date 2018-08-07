@@ -8,23 +8,49 @@ from proto import *
 
 from copy import deepcopy
 from packet_search_v2_utils import *
+import itertools
 
-def compute_prob(packet_body):
+import numpy as np
+def compute_islands(pos_error_poses,neg_error_poses):
+  pos_diffs = [i for i in pos_error_poses if i>1]
+  neg_diffs= [i for i in neg_diffs if i>1]
+  
+  return pos_diffs,neg_diffs
+def compute_diffs(packet_arr):
+  pos_error_poses  = [PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)];
+  neg_error_poses = [PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)];
+
+  pos_diff = [pos_error_poses[i][0]-pos_error_poses[i-1][-1] for i in range(len(pos_error_poses)) if i>0];
+  neg_diff = [neg_error_poses[i][0]-neg_error_poses[i-1][-1] for i in range(len(neg_error_poses)) if i>0];
+
+  pos_diffs = np.concatenate([EQUAL_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)]).tolist();
+  neg_diffs = np.concatenate([DIFF_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)]).tolist();
+  pos_diffs.extend(pos_diff);
+  neg_diffs.extend(neg_diff);
+  print pos_diffs,neg_diffs
+  
+
+  return pos_diffs,neg_diffs
+
+
+def compute_prob(packet_arr):
+
+  
+
+  ###generate the islands
+  pos_error_poses,neg_error_poses = compute_diffs(packet_arr);
   
 
 
-  ###generate the islands
-  pos_error_poses  = [i for i in range(L) if packet_body.bin[i]!=PACKET_ARRAY.bin[i] or i==0 or i==L-1];
-  neg_error_poses = [i for i in range(L) if packet_body.bin[i]==PACKET_ARRAY.bin[i] or i==0 or i==L-1];
-
-
-  pos_islands = [pos_error_poses[i] -pos_error_poses[i-1]  for i in range(len(pos_error_poses)) if i>0 and pos_error_poses[i] -pos_error_poses[i-1]>1];
-  neg_islands = [neg_error_poses[i] -neg_error_poses[i-1]  for i in range(len(neg_error_poses)) if i>0 and neg_error_poses[i] -neg_error_poses[i-1]>1];
+  pos_islands,neg_islands = compute_islands(pos_error_poses,neg_error_poses)
 
   ###apply the objective function
   prob = (LF-(len(pos_islands)+len(neg_islands)))/LF;
 
   return prob
+def get_hex(hex_data,lost_data):
+  return lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
+
 
 
 def worker():
@@ -78,6 +104,7 @@ def worker():
 
       hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data())
       gr_block.blocks_vector_sink_x_0.reset()
+      print "too small:",len(hex_data)
 
       
 
@@ -85,7 +112,8 @@ def worker():
         hex_buffer = lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
         lost_data = hex_buffer[-15:];
         hex_data = ()
-        #print hex_buffer
+        print "length of the buffer:",len(hex_buffer)
+        print "bytes already in the sink:",len(gr_block.blocks_vector_sink_x_0.data())
         
 
         
@@ -95,18 +123,22 @@ def worker():
 
 
         for pos ,byte, in enumerate(hex_buffer):
-          if len(hex_buffer[pos:pos+PACKET_BODY_LEN])<PACKET_BODY_LEN:
+
+          ###generate the array
+          packet_arr = hex_buffer[pos:pos+PACKET_BODY_LEN]
+
+          if len(packet_arr)<PACKET_BODY_LEN:
             lost_data=hex_buffer[pos:pos+PACKET_BODY_LEN]
             break
-          ###generate the array
-          packet_body_arr = hex_buffer[pos:pos+PACKET_BODY_LEN]
-          packet_body = BitArray(hex = ("").join(packet_body_arr));
-          prob = compute_prob(packet_body)
+
+          
+          prob = compute_prob(packet_arr)
 
           
           
           if prob>=THRESHOLD:
-            print "detected packet:",packet_body;
+            print "prob:",prob
+            print "detected packet:",("").join(packet_arr);
 
 
 
@@ -115,6 +147,7 @@ def worker():
   gr_block.stop()
   gr_block.wait()
 if __name__=="__main__":
+  #worker()
   with PyCallGraph(output=GraphvizOutput()):
     worker()
 

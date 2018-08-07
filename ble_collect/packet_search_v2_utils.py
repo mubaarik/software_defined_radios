@@ -1,6 +1,7 @@
 from optparse import OptionParser, OptionGroup
 from gnuradio.eng_option import eng_option
 from bitstring import BitArray
+import numpy as np
 
 ############
 ############
@@ -14,14 +15,36 @@ constants
 PRE_ERROR_LIMIT = 4
 PAYLOAD_ERROR_LIMIT = 21
 
+
+####
+characters = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
+BYTES = [a+b for a in characters for b in characters];
 #pre-amble and access code data
 PREA_AND_ADDR_STR = "aad6be898e"
 PREA_AND_ADDR = [PREA_AND_ADDR_STR[st:st+2] for st in range(len(PREA_AND_ADDR_STR)) if st%2==0]
 PREA_AND_ADDR_LEN = len(PREA_AND_ADDR);
+###
+
+def compute_map(_byte,index,equal = True):
+  data_points = {};
+  for b in BYTES:
+    if equal:
+      data_points[(_byte,b)]=[index*8+i for i in range(8) if BitArray(hex=b).bin[i]==BitArray(hex=_byte).bin[i]];
+    else:
+      data_points[(_byte,b)]=[index*8+i for i in range(8) if BitArray(hex=b).bin[i]!=BitArray(hex=_byte).bin[i]];
+  return data_points;
+
+
+
+
+
+
 
 # packet of interest
 PACKET_BODY_STR="d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"#"d4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"
 PACKET_BODY = [PACKET_BODY_STR[st:st+2] for st in range(len(PACKET_BODY_STR)) if st%2==0] #"b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9";
+
+PACKET_BYTE_MAP = []
 LF = len(PACKET_BODY_STR)*4.0;
 L =  len(PACKET_BODY_STR)*4;
 
@@ -29,14 +52,31 @@ L =  len(PACKET_BODY_STR)*4;
 THRESHOLD=0.65;
 
 ##
-PACKET_ARRAY = BitArray(hex = PACKET_BODY_STR);
+PACKET_ARRAY = BitArray(hex = PACKET_BODY_STR).bin;
 #PARKED_PACKET
 PACKET_BODY_LEN = len(PACKET_BODY);
 
 ##hamming distance map
-characters = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
+
 CHAR_DISTS = {(i,j):bin(int(i,16)^int(j,16)).count('1') for i in characters for j in characters}
 
+###equality map
+PACKET_EQUAL_MAP ={}
+for i in range(len(PACKET_BODY)):
+  PACKET_EQUAL_MAP.update(compute_map(PACKET_BODY[i],i));
+
+####equality difference map
+EQUAL_DIFF_MAP = {i:np.diff(PACKET_EQUAL_MAP[i]) for i in PACKET_EQUAL_MAP}
+
+
+###difference map 
+PACKET_DIFF_MAP = {}
+for i in range(len(PACKET_BODY)):
+  PACKET_DIFF_MAP.update(compute_map(PACKET_BODY[i],i,equal=False));
+
+
+###difference difference map
+DIFF_DIFF_MAP = {i:np.diff(PACKET_DIFF_MAP[i]) for i in PACKET_DIFF_MAP}
 
 
 
