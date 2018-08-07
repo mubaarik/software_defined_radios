@@ -66,7 +66,7 @@ for i in range(len(PACKET_BODY)):
   PACKET_EQUAL_MAP.update(compute_map(PACKET_BODY[i],i));
 
 ####equality difference map
-EQUAL_DIFF_MAP = {i:np.diff(PACKET_EQUAL_MAP[i]) for i in PACKET_EQUAL_MAP}
+EQUAL_DIFF_MAP = {i:[j for j in np.diff(PACKET_EQUAL_MAP[i]) if j>1] for i in PACKET_EQUAL_MAP}
 
 
 ###difference map 
@@ -76,7 +76,7 @@ for i in range(len(PACKET_BODY)):
 
 
 ###difference difference map
-DIFF_DIFF_MAP = {i:np.diff(PACKET_DIFF_MAP[i]) for i in PACKET_DIFF_MAP}
+DIFF_DIFF_MAP = {i:[j for j in np.diff(PACKET_DIFF_MAP[i]) if j>1] for i in PACKET_DIFF_MAP}
 
 
 

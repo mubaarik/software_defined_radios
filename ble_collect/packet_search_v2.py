@@ -13,21 +13,21 @@ import itertools
 import numpy as np
 def compute_islands(pos_error_poses,neg_error_poses):
   pos_diffs = [i for i in pos_error_poses if i>1]
-  neg_diffs= [i for i in neg_diffs if i>1]
+  neg_diffs= [i for i in neg_error_poses if i>1]
   
   return pos_diffs,neg_diffs
 def compute_diffs(packet_arr):
   pos_error_poses  = [PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)];
   neg_error_poses = [PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)];
-
-  pos_diff = [pos_error_poses[i][0]-pos_error_poses[i-1][-1] for i in range(len(pos_error_poses)) if i>0];
-  neg_diff = [neg_error_poses[i][0]-neg_error_poses[i-1][-1] for i in range(len(neg_error_poses)) if i>0];
+  
+  pos_diff = [pos_error_poses[i][0]-pos_error_poses[i-1][-1] for i in range(len(pos_error_poses)) if i>0 and pos_error_poses[i] and pos_error_poses[i-1]];
+  neg_diff = [neg_error_poses[i][0]-neg_error_poses[i-1][-1] for i in range(len(neg_error_poses)) if i>0 and neg_error_poses[i] and neg_error_poses[i-1]];
 
   pos_diffs = np.concatenate([EQUAL_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)]).tolist();
   neg_diffs = np.concatenate([DIFF_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)]).tolist();
   pos_diffs.extend(pos_diff);
   neg_diffs.extend(neg_diff);
-  print pos_diffs,neg_diffs
+  #print pos_diffs,neg_diffs
   
 
   return pos_diffs,neg_diffs
