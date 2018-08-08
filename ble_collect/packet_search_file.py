@@ -12,27 +12,41 @@ import itertools
 from threading import Thread
 
 import numpy as np
-
-def get_errors(packet_arr):
-  pos_error_poses  = [PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])]];
-  neg_error_poses = [PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])]];
-  return pos_error_poses,neg_error_poses;
-def diffdiff(pos_error_poses,neg_error_poses):
-  pos_diff = [pos_error_poses[i][0]-pos_error_poses[i-1][-1] for i in range(len(pos_error_poses)) if i>0 if pos_error_poses[i][0]-pos_error_poses[i-1][-1]>1];
-  neg_diff = [neg_error_poses[i][0]-neg_error_poses[i-1][-1] for i in range(len(neg_error_poses)) if i>0 if neg_error_poses[i][0]-neg_error_poses[i-1][-1]>1];
-  return pos_diff,neg_diff;
-def diffs(packet_arr):
-  pos_diffs = sum([EQUAL_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)],[]);
-  neg_diffs = sum([DIFF_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)],[]);
-  return pos_diffs,neg_diffs;
-def combine(pos_diff,neg_diff,pos_diffs,neg_diffs):
-  pos_diffs = sum([pos_diff,pos_diffs],[]);
-  neg_diffs = sum([neg_diff,neg_diffs],[]);
-  return pos_diffs,neg_diffs
+import pandas as pd
+import os
+import time
 
 
-def get_hex(hex_data,lost_data):
-  return lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
+HOPE_SIZE = 30;
+GAIN = 40
+
+class Circular:
+  def __init__(self):
+    self.base = "/Users/mmohamoud/software_defined_radios/ble_collect/test_files/"
+    self.files = ["file_zero","file_one","file_two","file_three","file_four","file_five","file_six","file_seven","file_eight","file_nine"];
+    self.meta_file = "meta_file.csv"
+    self.meta = {}
+    self.current_file = self.files[-1]
+    self.update_meta()
+  def update_meta(self):
+    if meta =={}:
+      self.meta = {filename:time.time() for filename in self.files};
+      pd.DataFrame(meta).to_csv(self.base+self.meta_file);
+    else:
+      self.meta[self.current_file] = time.time();
+      pd.DataFrame(meta).to_csv(self.base+self.meta_file);
+  def set_current(self):
+    self.current_file = self.files.pop(0);
+    self.files.append(self.current_file);
+  def set_rand_current(self):
+    rand_int = random.randint(0,10);
+    self.current_file = self.files[rand_int];
+    self.files.append(self.current_file);
+
+
+
+
+
 
 class Populate(Thread):
   def __init__(self,_buffer, _data):
@@ -47,6 +61,11 @@ def worker():
   # Initialize Gnu Radio
   gr_block = grblock()
   gr_block.start()
+
+  #####circular
+  circular = Circular()
+  filename = circular.base+circular.current_file;
+
 
   # Initialize command line arguments
   (opts, args) = init_opts(gr_block)
@@ -72,7 +91,7 @@ def worker():
   pcap_fd = open_pcap(opts.pcap_file)
 
   current_hop = 1
-  hopping_time = datetime.now() + timedelta(seconds=opts.ble_scan_window)
+  hopping_time = datetime.now() + timedelta(seconds=HOPE_SIZE)
 
   # Set initial BLE channel
   current_ble_chan = opts.scan_channels[1]
@@ -92,8 +111,15 @@ def worker():
     
     while True:
 
-      hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data())
-      gr_block.blocks_vector_sink_x_0.reset()
+      if time.now()>hopping_time:
+        circular.set_current()
+        filename = circular.base+circular.current_file;
+        gr_block.set_filename(filename);
+        circular.update_meta();
+        hopping_time = datetime.now() + timedelta(seconds=HOPE_SIZE*GAIN);
+
+      hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data());
+      gr_block.blocks_vector_sink_x_0.reset();
       print "too small:",len(hex_data)
 
 

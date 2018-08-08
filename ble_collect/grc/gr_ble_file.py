@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Wed Aug  1 15:31:34 2018
+# Generated: Wed Aug  8 14:15:57 2018
 ##################################################
 
 from gnuradio import blocks
@@ -41,21 +41,16 @@ class gr_ble_file(gr.top_block):
         self.gfsk_gain_mu = gfsk_gain_mu = 0.8
         self.freq_offset = freq_offset = 0
         self.freq = freq = ble_base_freq+(ble_channel_spacing * ble_channel)
-
-        ##################################################
-        # Message Queues
-        ##################################################
-        blocks_message_sink_0_msgq_out = virtual_sink_0_msgq_in = gr.msg_queue(2)
+        self.filename = filename = "/Users/mmohamoud/software_defined_radios/ble_collect/demoded_data_lewis_test"
 
         ##################################################
         # Blocks
         ##################################################
         self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1, 1024)
         self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, 2e5,True)
-        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, blocks_message_sink_0_msgq_out, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, 28e4,True)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demoded_data_lewis_test', True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, filename, True)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
@@ -66,7 +61,6 @@ class gr_ble_file(gr.top_block):
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_float_to_char_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.blocks_float_to_char_0, 0))
-        self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_message_sink_0, 0))
         self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_vector_sink_x_0, 0))
 
     def get_transition_width(self):
@@ -178,6 +172,13 @@ class gr_ble_file(gr.top_block):
 
     def set_freq(self, freq):
         self.freq = freq
+
+    def get_filename(self):
+        return self.filename
+
+    def set_filename(self, filename):
+        self.filename = filename
+        self.blocks_file_source_0.open(self.filename, True)
 
 
 def main(top_block_cls=gr_ble_file, options=None):
