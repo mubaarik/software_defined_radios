@@ -170,7 +170,7 @@ class Circular:
     rand_int = random.randint(0,10);
     if len(self.files)<9:
       print "data"
-    self.current_file = self.files.pop();
+    self.current_file = self.files.pop(rand_int);
     self.files.append(self.current_file);
 
 def worker():
@@ -213,6 +213,7 @@ def worker():
         filename = circular.base+circular.current_file;
         gr_block.set_filename(filename);
         circular.update_meta();
+        print "updating...",filename
         hopping_time = datetime.now() + timedelta(seconds=HOPE_SIZE);
 
 
