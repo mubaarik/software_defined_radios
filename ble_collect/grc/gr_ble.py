@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Wed Aug  1 14:39:37 2018
+# Generated: Wed Sep  5 11:55:33 2018
 ##################################################
 
 from gnuradio import analog
@@ -37,7 +37,7 @@ class gr_ble(gr.top_block):
         self.ble_base_freq = ble_base_freq = 2402e6
         self.squelch_threshold = squelch_threshold = -110
         self.sensivity = sensivity = 1.0
-        self.rf_gain = rf_gain = 74
+        self.rf_gain = rf_gain = 10
         self.lowpass_filter = lowpass_filter = firdes.low_pass(1, sample_rate, cutoff_freq, transition_width, firdes.WIN_HAMMING, 6.76)
         self.gfsk_sps = gfsk_sps = int(sample_rate / data_rate)
         self.gfsk_omega_limit = gfsk_omega_limit = 0.035
@@ -49,7 +49,7 @@ class gr_ble(gr.top_block):
         ##################################################
         # Message Queues
         ##################################################
-        self.message_queue = self.message_queue = gr.msg_queue(2)
+        blocks_message_sink_0_msgq_out = virtual_sink_0_msgq_in = gr.msg_queue(2)
 
         ##################################################
         # Blocks
@@ -64,7 +64,7 @@ class gr_ble(gr.top_block):
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(rf_gain, 0)
-        self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, (lowpass_filter), 0, sample_rate)
         self.digital_gfsk_demod_0 = digital.gfsk_demod(
         	samples_per_symbol=gfsk_sps,
@@ -78,7 +78,9 @@ class gr_ble(gr.top_block):
         )
         self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1, 1024)
         self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
-        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, self.message_queue, True)
+        self.blocks_message_sink_0 = blocks.message_sink(gr.sizeof_char*1, blocks_message_sink_0_msgq_out, True)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/Users/mmohamoud/software_defined_radios/ble_collect/demodulated_files/raw_stream', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_threshold, .1, 0, True)
 
 
@@ -87,6 +89,7 @@ class gr_ble(gr.top_block):
         # Connections
         ##################################################
         self.connect((self.analog_pwr_squelch_xx_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
+        self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_message_sink_0, 0))
         self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_vector_sink_x_0, 0))
         self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))

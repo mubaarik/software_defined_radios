@@ -150,6 +150,7 @@ def worker():
           if len(packet_arr)<PACKET_BODY_LEN:
             lost_data=hex_buffer[pos:pos+PACKET_BODY_LEN]
             break
+          
           pos_error_poses  = [PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])]];
           neg_error_poses = [PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])]];
 

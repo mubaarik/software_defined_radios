@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Usrp Out
-# Generated: Wed Aug  8 16:01:14 2018
+# Generated: Tue Aug 21 10:48:06 2018
 ##################################################
 
 from gnuradio import blocks
@@ -24,8 +24,7 @@ class usrp_out(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.sample_rate = sample_rate = 4e6
-        self.filename = filename = "/Users/mmohamoud/software_defined_radios/ble_collect/test_files/file_zero"
+        self.samp_rate = samp_rate = 32000
 
         ##################################################
         # Blocks
@@ -37,11 +36,10 @@ class usrp_out(gr.top_block):
         		channels=range(1),
         	),
         )
-        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_source_0.set_samp_rate(4e6)
         self.uhd_usrp_source_0.set_center_freq(2426e6, 0)
-        self.uhd_usrp_source_0.set_gain(74, 0)
-        self.uhd_usrp_source_0.set_antenna('RX2', 0)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filename, False)
+        self.uhd_usrp_source_0.set_gain(70, 0)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, 'raw_stream', False)
         self.blocks_file_sink_0.set_unbuffered(False)
 
 
@@ -51,19 +49,11 @@ class usrp_out(gr.top_block):
         ##################################################
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_file_sink_0, 0))
 
-    def get_sample_rate(self):
-        return self.sample_rate
+    def get_samp_rate(self):
+        return self.samp_rate
 
-    def set_sample_rate(self, sample_rate):
-        self.sample_rate = sample_rate
-        self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
-
-    def get_filename(self):
-        return self.filename
-
-    def set_filename(self, filename):
-        self.filename = filename
-        self.blocks_file_sink_0.open(self.filename)
+    def set_samp_rate(self, samp_rate):
+        self.samp_rate = samp_rate
 
 
 def main(top_block_cls=usrp_out, options=None):

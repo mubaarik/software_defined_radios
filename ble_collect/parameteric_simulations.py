@@ -1,6 +1,6 @@
 import pickle
 #from grc.gr_ble import gr_ble as gr_block
-from grc.file_transfer_block import file_transfer_block as gr_block
+from grc.file_transfer import file_transfer as gr_block
 from proto import *
 
 from datetime import datetime, timedelta
@@ -28,7 +28,7 @@ class SimulatePrm:
 	HOPE_TIME=15
 
 	def __init__(self):
-		self.filename = "file_based_sim7.csv"
+		self.filename = "file_based_sim8.csv"
 		self.param_time  = 10*60
 		# Initialize Gnu Radio
 		self.gr_block = gr_block()
@@ -64,6 +64,8 @@ class SimulatePrm:
 
 		##load the simulation output file csv
 		self.model_arr = []
+		print "running...."
+		self.run_simulation()
 
 	  
 	def run_simulation(self):
@@ -71,9 +73,10 @@ class SimulatePrm:
 			##set the new parameters using the simulation utilities
 
 			if datetime.now()>self.hopping_time:
+				print "setting a new"
 				self.hopping_time=datetime.now()+timedelta(seconds=	self.HOPE_TIME)
 				
-				self.gr_block.blocks_file_source_0.seek(0,0)
+				self.gr_block.file_source.seek(0,0)
 
 				##store the current data
 				model = deepcopy(self.data_model.get_dict())
@@ -83,7 +86,6 @@ class SimulatePrm:
 				##save the data
 				self.data_model.__set_prm__();
 				self.data_model.set_gr_params(self.gr_block);
-				self.data_model.detected=0
 				self.data_model.processed=0
 				
 
@@ -108,12 +110,6 @@ class SimulatePrm:
 			_buffer = ''.join(str(x) for x in self.lst_buffer) + self.gr_buffer
 			self.lst_buffer=self.gr_buffer[-7:]
 			self.gr_buffer=''
-			#print "buffer length:",len(_buffer)
-			conv = Convolution(self.search_term,_buffer,[]);
-			conv.convolve()
-
-			if conv.sim_info():
-				self.data_model.detected+=conv.num_elm
 		 
 
 
@@ -131,6 +127,7 @@ class SimulatePrm:
 
 
 
+
 				pos += BLE_ADDR_LEN
 
 				# Dewhitening received BLE Header
@@ -143,11 +140,13 @@ class SimulatePrm:
 				# Check BLE PDU type
 				
 
-				adver_packet = ble_access_address == BLE_ACCESS_ADDR
+				if ble_access_address == BLE_ACCESS_ADDR:
+					print "I have a BLE ADDRESS"
 				if ble_access_address == BLE_ACCESS_ADDR:
 				  ble_len = ble_header[1] & 0x3f
 				else:
 				  continue
+				
 				self.data_model.processed+=1;
 
 				###

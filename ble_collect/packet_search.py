@@ -59,7 +59,8 @@ if __name__ == '__main__':
     while True:
       hex_data+= deepcopy(gr_block.blocks_vector_sink_x_0.data())
       gr_block.blocks_vector_sink_x_0.reset()
-      print "too small:",len(hex_data)
+      #print "too small:",len(hex_data)
+      #print hex_data[0:6]
 
       
 
@@ -68,7 +69,7 @@ if __name__ == '__main__':
         hex_buffer = lost_data+[('0'+hex(i)[2:])[-2:] for i in hex_data]
         lost_data = hex_buffer[-15:];
         hex_data = ()
-        print "length of the buffer:",len(hex_buffer)
+        #print "length of the buffer:",len(hex_buffer)
         
 
         
@@ -97,7 +98,7 @@ if __name__ == '__main__':
           if pre_dist>PRE_ERROR_LIMIT:
             continue
 
-          print "found preamble"
+          #print "found preamble"
           
 
           ##debuging

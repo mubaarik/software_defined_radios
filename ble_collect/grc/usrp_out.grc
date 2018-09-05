@@ -38,7 +38,7 @@
     </param>
     <param>
       <key>generate_options</key>
-      <value>qt_gui</value>
+      <value>no_gui</value>
     </param>
     <param>
       <key>hier_block_src_path</key>
@@ -140,11 +140,11 @@
     </param>
     <param>
       <key>file</key>
-      <value>/Users/mmohamoud/sdr/ble_dump/usrp_out_file</value>
+      <value>raw_stream</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(624, 224)</value>
+      <value>(792, 212)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -199,7 +199,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>60</value>
+      <value>70</value>
     </param>
     <param>
       <key>lo_export0</key>
@@ -1351,7 +1351,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(392, 228)</value>
+      <value>(192, 220)</value>
     </param>
     <param>
       <key>_rotation</key>

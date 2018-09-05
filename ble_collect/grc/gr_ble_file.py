@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Bluetooth LE Receiver
 # Author: Jan Wagner
-# Generated: Wed Aug  8 14:15:57 2018
+# Generated: Thu Aug  9 10:27:04 2018
 ##################################################
 
 from gnuradio import blocks
@@ -47,10 +47,8 @@ class gr_ble_file(gr.top_block):
         # Blocks
         ##################################################
         self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1, 1024)
-        self.blocks_unpacked_to_packed_xx_0 = blocks.unpacked_to_packed_bb(1, gr.GR_LSB_FIRST)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, 28e4,True)
-        self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, filename, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_char*1, 28e4,True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, filename, True)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
@@ -59,9 +57,7 @@ class gr_ble_file(gr.top_block):
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_float_to_char_0, 0), (self.blocks_unpacked_to_packed_xx_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.blocks_float_to_char_0, 0))
-        self.connect((self.blocks_unpacked_to_packed_xx_0, 0), (self.blocks_vector_sink_x_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.blocks_vector_sink_x_0, 0))
 
     def get_transition_width(self):
         return self.transition_width

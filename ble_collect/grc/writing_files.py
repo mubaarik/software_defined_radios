@@ -24,7 +24,7 @@ class Circular:
     self.meta_file = "meta_file.csv"
     self.meta = {}
     self.current_file = self.files[-1]
-    self.update_meta()
+    #self.update_meta()
   def update_meta(self):
     if self.meta =={}:
       self.meta = {filename:time.time() for filename in self.files};
@@ -98,7 +98,7 @@ def worker():
         circular.set_rand_current()
         filename = circular.base+circular.current_file;
         gr_block.set_filename(filename);
-        circular.update_meta();
+        #circular.update_meta();
         hopping_time = datetime.now() + timedelta(seconds=HOPE_SIZE);
 
 

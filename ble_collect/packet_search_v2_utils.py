@@ -43,6 +43,7 @@ def compute_map(_byte,index,equal = True):
 # packet of interest
 PACKET_BODY_STR="d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"#"d4e0ab617df259c319a4ab5984b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9"
 PACKET_BODY = [PACKET_BODY_STR[st:st+2] for st in range(len(PACKET_BODY_STR)) if st%2==0] #"b1d373803183ab10953e489039dd3b36236a29f0b0c6f8ba00b9";
+print "lengh",len(PACKET_BODY)
 
 PACKET_BYTE_MAP = []
 LF = len(PACKET_BODY_STR)*4.0;

@@ -124,12 +124,20 @@ def worker():
           if len(packet_arr)<PACKET_BODY_LEN:
             lost_data=hex_buffer[pos:pos+PACKET_BODY_LEN]
             break
+
+          ##Collect indices of the bits that are the same
           pos_error_poses  = [PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_EQUAL_MAP[(PACKET_BODY[i],packet_arr[i])]];
+
+          ##Collect indices of the bits that are different
           neg_error_poses = [PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN) if PACKET_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])]];
 
+          ##collect size of the islands of same bits
           pos_diff = [pos_error_poses[i][0]-pos_error_poses[i-1][-1] for i in range(len(pos_error_poses)) if i>0 if pos_error_poses[i][0]-pos_error_poses[i-1][-1]>1];
+
+          ##collect the size of the islands with all different bits 
           neg_diff = [neg_error_poses[i][0]-neg_error_poses[i-1][-1] for i in range(len(neg_error_poses)) if i>0 if neg_error_poses[i][0]-neg_error_poses[i-1][-1]>1];
 
+          ##combine the islands in to two longer lists
           pos_diffs = sum([EQUAL_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)],[]);
           neg_diffs = sum([DIFF_DIFF_MAP[(PACKET_BODY[i],packet_arr[i])] for i in range(PACKET_BODY_LEN)],[]);
 
